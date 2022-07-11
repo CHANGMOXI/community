@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>码匠社区</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <!--要有三个标签 连接 样式文件，两个css样式文件用<link/>标签，一个js样式文件用<script/>标签-->
+
+    <!-- 两个css样式文件为 bootstrap.min.css、bootstrap-theme.min.css -->
+    <!--templates下的文件可以直接访问到同一个父目录下static的文件-->
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
+
+    <!-- 一个js样式文件为 js/bootstrap.min.js -->
+    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+
+                <span class="sr-only">码匠社区</span>   <!--导航条名字-->
+
+            </button>
+            <a class="navbar-brand" href="#">码匠社区</a>   <!--导航条名字，原本的 Brand 改成 码匠社区-->
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="搜索问题"><!--搜索框的默认提示，原本的 Search 改成 搜索问题-->
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>   <!--原本的 Submit按钮 改成 搜索-->
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">登录</a></li> <!--原本的 Link按钮 改成 登录-->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">我<span class="caret"></span></a><!--Dropdown下拉按钮 改成 我-->
+
+                    <ul class="dropdown-menu">
+                        <!--下拉后的选项-->
+                        <li><a href="#">消息中心</a></li>
+                        <li><a href="#">个人资料</a></li>
+                        <li><a href="#">退出</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+</body>
+</html>
