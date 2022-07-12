@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author CZS
  * @create 2022-07-10 17:19
+ *
+ * 主页controller
+ *
  **/
 
 @Controller
