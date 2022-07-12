@@ -2,12 +2,17 @@ package life.majiang.community.controller;
 
 import life.majiang.community.dto.AccessTokenDTO;
 import life.majiang.community.dto.GitHubUser;
+import life.majiang.community.dao.UserDao;
+import life.majiang.community.domain.User;
 import life.majiang.community.provider.GitHubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 /**
  * @author CZS
@@ -22,17 +27,21 @@ public class AuthorizeController {
     @Autowired
     private GitHubProvider gitHubProvider;
 
-        //将 注解里的配置文件属性值 赋值 给这些成员变量
-        @Value("${github.client.id}")
-        private String clientId;
-        @Value("${github.client.secret}")
-        private String clientSecret;
-        @Value("${github.redirect.uri}")
-        private String redirectUri;
+    //将 注解里的配置文件属性值 赋值 给这些成员变量
+    @Value("${github.client.id}")
+    private String clientId;
+    @Value("${github.client.secret}")
+    private String clientSecret;
+    @Value("${github.redirect.uri}")
+    private String redirectUri;
+
+    @Autowired
+    private UserDao userDao;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
-                           @RequestParam(name = "state") String state){
+                           @RequestParam(name = "state") String state,
+                           HttpServletRequest request){
 
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
 
@@ -53,10 +62,28 @@ public class AuthorizeController {
         String accessToken = gitHubProvider.getAccessToken(accessTokenDTO);//这里的形参accessTokenDTO是携带了code的access_token
 
         //模拟GET请求，请求中携带了access_token，如果正确，则GitHub返回 真正的user信息，有问题则返回null
-        GitHubUser user = gitHubProvider.getUser(accessToken);//这里的形参accessToken是获取到的 真正的access_token
+        GitHubUser gitHubUser = gitHubProvider.getUser(accessToken);//这里的形参accessToken是获取到的 真正的access_token
 
-        System.out.println(user.getName());//测试是否成功获取到真正的user信息
+        if (gitHubUser != null){
+            //登录成功
 
-        return "index";
+            //用户信息写入数据库
+            User user = new User();
+            user.setToken(UUID.randomUUID().toString());
+            user.setName(gitHubUser.getName());
+            user.setAccountId(String.valueOf(gitHubUser.getId()));//getId()返回Long类型，转成String类型放进去
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreate());//初始化时，gmtModified与gmtCreate一致
+            userDao.insert(user);
+
+            //实现登录状态功能：写 cookie 和 session
+            request.getSession().setAttribute("user",gitHubUser);
+
+            return "redirect:/";//跳转回(重定向)到首页index页面
+        }else {
+            //登录失败，重新登录
+            return "redirect:/";//跳转回(重定向)到首页index页面
+        }
+
     }
 }

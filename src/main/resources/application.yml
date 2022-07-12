@@ -9,3 +9,27 @@ github:
     uri: http://localhost:8887/callback
 
 
+#spring:
+#  datasource:
+#    url: jdbc:h2:~/community.mv.db;DB_CLOSE_DELAY=-1
+#    username: sa
+#    password: 123
+#    driver-class-name: org.h2.Driver
+
+spring:
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:13306/community?useUnicode=true&characterEncoding=utf8&useSSL=false
+      username: root
+      password: 123456
+
+
+#设置Mp相关的配置
+#开启日志，能看到SQL语句
+mybatis-plus:
+  configuration:
+    #    开启日志后，去除冗余信息
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
