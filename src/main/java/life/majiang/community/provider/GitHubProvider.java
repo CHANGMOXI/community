@@ -51,21 +51,19 @@ public class GitHubProvider {
     }
 
     ////根据OkHttp的GET请求示例，改成自己的方法
-    //模拟GET请求，
+    //模拟GET请求
     public GitHubUser getUser(String accessToken){
         OkHttpClient client = new OkHttpClient();
 
-        //现在GitHub推荐
+        //现在GitHub推荐新的方式
         // 将access_token通过作为Authorization HTTP header中的参数传输，而不是作为url中的参数明文传输
-        //▲▲▲▲▲▲新的方式▲▲▲▲▲▲
         Request request = new Request.Builder()
+                //▲▲▲▲▲▲新的方式▲▲▲▲▲▲
                 .url("https://api.github.com/user")
                 .header("Authorization","token " + accessToken)
-                .build();
-        //旧的方式
-//        Request request = new Request.Builder()
+                //旧的方式
 //                .url("https://api.github.com/user?access_token=" + accessToken)
-//                .build();
+                .build();
 
         try {
             Response response = client.newCall(request).execute();
