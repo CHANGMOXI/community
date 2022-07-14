@@ -28,17 +28,17 @@ public class QuestionServiceImpl implements QuestionService {
     @Autowired
     private UserDao userDao;
 
-    //
+    //发布问题功能
     @Override
     public String doPublish(String title, String description, String tag, HttpServletRequest request, Model model) {
         //页面传递了title、description、tag，还需要获取creator
 
-        //即使有异常，也能拿到输入的信息，回显信息到publish页面
+        //即使有异常，也能拿到输入的信息，在publish页面继续回显信息
         model.addAttribute("title",title);
         model.addAttribute("description",description);
         model.addAttribute("tag",tag);
 
-        //信息为空时，给出提示
+        //点击发布，如果信息为空时，给出提示
         if (title == null || title == ""){
             model.addAttribute("error","标题不能为空");
             return "publish";//有异常，则跳转回publish页面
@@ -55,7 +55,7 @@ public class QuestionServiceImpl implements QuestionService {
         //关于creator的获取
         //1.原本思路：像持久化登录状态一样，获取cookie，用里面的token查询数据库获得user，user里的account_id也就是creator
         //2.我的思路：直接从session里面获取gitHubUser的id，也就是creator
-        //      ---> 因为在AuthorizeController中，首次登录第一次写session时，就把giHubUser写入session，里面就有用户id
+        //      ---> 在UserServiceImpl的loginByGitHub方法中，首次登录第一次写session时，就把giHubUser写入session，里面就有用户id
         //       ---> 可能的不足：session默认无操作30分钟就会销毁，而cookie能保持更长时间
 
         //获取creator原本思路
@@ -67,7 +67,7 @@ public class QuestionServiceImpl implements QuestionService {
                 userByToken = userDao.findByToken(token);//根据token去数据库查询对应用户
 
                 if (userByToken != null){
-                    //如果这个userByToken用户存在，则绑定到session
+                    //如果这个userByToken用户存在，则写入到session
                     request.getSession().setAttribute("user",userByToken);
                 }
                 break;
