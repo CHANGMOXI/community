@@ -10,7 +10,7 @@ import lombok.Data;
 public class GitHubUser {
     //属性名 与 返回的user信息的属性名 要一致
     private String name;//用户名
-    private Long id;//用户id，唯一标识
+    private String id;//用户id，唯一标识
     private String bio;//用户描述
     private String avatarUrl;//用户头像url地址
     //GitHubUser对象都是通过GitHubProvider中的getUser方法获取的

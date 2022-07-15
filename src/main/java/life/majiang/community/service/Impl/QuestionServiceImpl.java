@@ -90,7 +90,7 @@ public class QuestionServiceImpl implements QuestionService {
         question.setTitle(title);
         question.setDescription(description);
         question.setTag(tag);
-        question.setCreator(Integer.valueOf(userByToken.getAccountId()));//设置creator
+        question.setCreator(userByToken.getAccountId());//设置creator
         question.setGmtCreate(System.currentTimeMillis());
         question.setGmtModified(question.getGmtCreate());
 

@@ -1,5 +1,12 @@
 server:
   port: 8887
+#  解决浏览器第一次访问首页，登录后url变成 http://localhost:8887/;jsessionid=66FB6BC4B5DCB72A176EDDC53D759AB3
+#  导致 无法显示问题列表 的问题
+  servlet:
+    session:
+      tracking-modes: cookie
+      cookie:
+        http-only: true
 
 github:
   client:
@@ -9,13 +16,6 @@ github:
     uri: http://localhost:8887/callback
 
 
-#spring:
-#  datasource:
-#    url: jdbc:h2:~/community.mv.db;DB_CLOSE_DELAY=-1
-#    username: sa
-#    password: 123
-#    driver-class-name: org.h2.Driver
-
 spring:
   datasource:
     druid:
@@ -23,13 +23,16 @@ spring:
       url: jdbc:mysql://localhost:13306/community?useUnicode=true&characterEncoding=utf8&useSSL=false
       username: root
       password: 123456
+  #Mp相关的配置
+  # 开启日志后，去除冗余信息
+  main:
+    banner-mode: off
 
-
-#设置Mp相关的配置
+#Mp相关的配置
 #开启日志，能看到SQL语句
 mybatis-plus:
   configuration:
-    #    开启日志后，去除冗余信息
+    #开启日志后，去除冗余信息
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     banner: false

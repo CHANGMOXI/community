@@ -22,5 +22,5 @@ public interface UserDao extends BaseMapper<User> {
 
     //自定义查询：根据question中的creator查询对应的user
     @Select("select * from user where account_id = #{accountId};")
-    User selectByAccountId(@Param("accountId") Integer creator);
+    User selectByAccountId(@Param("accountId") String creator);
 }

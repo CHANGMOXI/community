@@ -64,21 +64,37 @@ public class UserServiceImpl implements UserService {
 
         //4.验证用户信息
         if (gitHubUser != null && gitHubUser.getId() != null){
-            //用户信息存在，登录成功
+            //GitHub返回的用户信息存在，登录成功
 
-            //用户信息写入数据库
-            User user = new User();
-            user.setName(gitHubUser.getName());
+            //根据 gitHubUser中的用户id 查询用户信息 是否已经存在于 数据库的表user
+            User userByAccountId = userDao.selectByAccountId(gitHubUser.getId());
 
+            //新的token，用来 更新已存在的用户token 或 作为新用户的token
             String token = UUID.randomUUID().toString();//生成一个token，写cookie时要用到token
-            user.setToken(token);//把生成的token也放到user对象，存入数据库
 
-            user.setAccountId(String.valueOf(gitHubUser.getId()));//getId()返回Long类型，转成String类型放进去
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());//初始化时，gmtModified与gmtCreate一致
-            user.setAvatarUrl(gitHubUser.getAvatarUrl());//设置用户头像url地址
+            if (userByAccountId != null){
+                //用户信息已存在，只更新字段name、token、gmt_modified、bio、avatar_url
+                userByAccountId.setName(gitHubUser.getName());
+                userByAccountId.setToken(token);//把上面生成的新token也放进去
+                userByAccountId.setGmtModified(System.currentTimeMillis());
+                userByAccountId.setBio(gitHubUser.getBio());
+                userByAccountId.setAvatarUrl(gitHubUser.getAvatarUrl());//更新用户头像url地址
 
-            userDao.insert(user);//用户信息存入数据库
+                userDao.updateById(userByAccountId);//更新对应的用户信息(用MyBatis-Plus自带的)
+            }else {
+                //用户信息不存在，将新的用户信息写入数据库
+                userByAccountId = new User();
+                userByAccountId.setName(gitHubUser.getName());
+                userByAccountId.setAccountId(gitHubUser.getId());
+                userByAccountId.setToken(token);//把上面生成的新token也放进去
+                userByAccountId.setGmtCreate(System.currentTimeMillis());
+                userByAccountId.setGmtModified(userByAccountId.getGmtCreate());//新用户gmtModified与gmtCreate一致
+                userByAccountId.setBio(gitHubUser.getBio());
+                userByAccountId.setAvatarUrl(gitHubUser.getAvatarUrl());//设置用户头像url地址
+
+                userDao.insert(userByAccountId);//新用户信息存入数据库(用MyBatis-Plus自带的)
+            }
+
 
             //登录成功，写 session 和 cookie
             //1.这里 写session ---> 为了在首次登录时，把user信息写入session
@@ -95,38 +111,12 @@ public class UserServiceImpl implements UserService {
 
         //登录成功或失败，都跳转回(重定向)到首页index页面
         return "redirect:/";
+        //浏览器第一次访问首页时，需要重新登录，这时候登录后通过这种重定向方式会让页面url多了一串jsessionid
+        //比如：http://localhost:8887/;jsessionid=6E789A291143576A39A230E1C462F512
+        //导致 无法显示问题列表，因为这个地址并不是 根目录http://localhost:8887/
+        //▲▲▲目前解决方案▲▲▲ ---> application.yml配置server.servlet.session.tracking-modes: cookie
+        //                                         server.servlet.session.cookie.http-only: true
     }
-
-//    //GitHub登录功能：持久化登录状态
-//    @Override
-//    public String persistLogin(HttpServletRequest request) {
-//
-//        //*****************这种方法只适合小用户量，可以用Redis等方式优化*****************
-//
-//        //首次登录时，客户端(用户浏览器) 会接收到 服务端(码匠社区)response返回过来的cookie，其中有服务端生成的 用户token
-//        //持久化登录状态
-//        // ---> 1.首次登录之后，客户端(用户浏览器)以不同窗口(标签页)再次访问首页时，会发送 首次登录 接收到的cookie(其中有 用户token)
-//        //  ---> 2.服务端(码匠社区) 接收到 客户端(用户浏览器) 再次发送的cookie，并获取cookie的所有信息
-//        //   ---> 3.如果找到token，就拿到token的值
-//        //    ---> 4.根据token的值查询数据库，获取对应的user
-//        //     ---> 5.如果user不为空，则写入session，让index.html根据session的内容显示登录状态，实现持久化登录状态
-//        Cookie[] cookies = request.getCookies();    //第2步
-//        if (cookies != null && cookies.length > 0){ //判断cookie有没有内容
-//            for (Cookie cookie : cookies) {
-//                if (cookie.getName().equals("token")){
-//                    String token = cookie.getValue();   //第3步
-//                    User userByToken = userDao.selectByToken(token);  //第4步
-//
-//                    if (userByToken != null){
-//                        request.getSession().setAttribute("user",userByToken);  //第5步
-//                    }
-//                    break;
-//                }
-//            }
-//        }
-//
-//        return "index";
-//    }
 
 }
 
