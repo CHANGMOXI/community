@@ -4,13 +4,17 @@ import life.majiang.community.dao.QuestionDao;
 import life.majiang.community.dao.UserDao;
 import life.majiang.community.domain.Question;
 import life.majiang.community.domain.User;
+import life.majiang.community.dto.QuestionDTO;
 import life.majiang.community.service.QuestionService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author CZS
@@ -61,16 +65,18 @@ public class QuestionServiceImpl implements QuestionService {
         //获取creator原本思路
         User userByToken = null;
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("token")){
-                String token = cookie.getValue();
-                userByToken = userDao.findByToken(token);//根据token去数据库查询对应用户
+        if (cookies != null && cookies.length >0){  //判断cookie有没有内容
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("token")){
+                    String token = cookie.getValue();
+                    userByToken = userDao.selectByToken(token);//根据token去数据库查询对应用户
 
-                if (userByToken != null){
-                    //如果这个userByToken用户存在，则写入到session
-                    request.getSession().setAttribute("user",userByToken);
+                    if (userByToken != null){
+                        //如果这个userByToken用户存在，则写入到session
+                        request.getSession().setAttribute("user",userByToken);
+                    }
+                    break;
                 }
-                break;
             }
         }
         //如果这个userByToken用户不存在，给出提示信息
@@ -91,5 +97,30 @@ public class QuestionServiceImpl implements QuestionService {
         questionDao.save(question);//存入表question
 
         return "redirect:/";//没有异常，则跳转回(重定向)首页
+    }
+
+
+    //首页问题列表功能：查询获得所有QuestionDTO (所有question信息和对应的user信息)
+    @Override
+    public List<QuestionDTO> list() {
+        //先查询获取所有question
+        List<Question> questionList = questionDao.selectList(null);//使用MyBatis-Plus自带的查询
+
+        ArrayList<QuestionDTO> questionDTOArrayList = new ArrayList<>();
+
+        for (Question question : questionList) {
+            //根据question中的creator(也就是account_id)查询对应的user
+            User user = userDao.selectByAccountId(question.getCreator());
+
+            //把question信息和对应的user信息放进questionDTO
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(question,questionDTO);//利用工具类，快速复制question信息
+            questionDTO.setUser(user);//设置user信息
+
+            //一条问题记录 作为 一个questionDTO对象，放进list中
+            questionDTOArrayList.add(questionDTO);
+        }
+
+        return questionDTOArrayList;
     }
 }

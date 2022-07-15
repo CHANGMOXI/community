@@ -15,6 +15,6 @@ public interface UserService {
     //GitHub登录功能：完成登录并显示登录状态
     String loginByGitHub(String code, HttpServletRequest request, HttpServletResponse response);
 
-    //GitHub登录功能：持久化登录状态
-    String persistLogin(HttpServletRequest request);
+//    //GitHub登录功能：持久化登录状态
+//    String persistLogin(HttpServletRequest request);
 }

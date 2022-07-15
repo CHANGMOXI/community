@@ -1,4 +1,4 @@
-body{
+body {
     background-color: #efefef;
 }
 
@@ -7,7 +7,22 @@ body{
     margin: 30px;
 }
 
-.btn-publish{
+.btn-publish {
     float: right;
     margin-bottom: 15px;
 }
+
+/* 首页问题列表 */
+/* 头像框大小 */
+.media-object {
+    width: 60px;
+    height: 60px;
+}
+/* 灰字：回复数、浏览数、发布时间 */
+.text-desc {
+    font-size: 12px;
+    font-weight: normal;
+    color: #999;
+}
+
+

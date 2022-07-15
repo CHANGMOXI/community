@@ -74,8 +74,8 @@ public class GitHubProvider {
 
             return gitHubUser;//没问题则返回真正的user信息
         } catch (IOException e) {
-            e.printStackTrace();//有问题就返回null
+            e.printStackTrace();
         }
-        return null;
+        return null;//有问题就返回null
     }
 }
