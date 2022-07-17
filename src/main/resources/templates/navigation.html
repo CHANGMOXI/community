@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="nav">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">码匠社区</span>   <!--导航条名字-->
+                </button>
+                <a class="navbar-brand" href="/">码匠社区</a>   <!--导航条名字，原本的 Brand 改成 码匠社区-->
+                <!-- href="/" ===> 点击导航条的码匠社区能跳转回首页 -->
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="搜索问题"><!--搜索框的默认提示，原本的 Search 改成 搜索问题-->
+                    </div>
+                    <button type="submit" class="btn btn-default">搜索</button>   <!--原本的 Submit按钮 改成 搜索-->
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+
+                    <!--▲▲▲登录成功，显示 发布按钮▲▲▲-->
+                    <li th:if="${session.user != null}">
+                        <a href="/publish">发布</a>
+                    </li>
+                    <!--▲▲▲登录成功，显示用户名▲▲▲-->
+                    <li class="dropdown" th:if="${session.user != null}">   <!--判断session中的user数据是否存在-->
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">
+                            <span th:text="${session.user.getName()}"></span>
+                            <span class="caret"></span></a>
+                        <!-- th:text="${session.user.getName()}" ==> 登录成功的情况，Dropdown按钮 变成 用户名-->
+
+                        <ul class="dropdown-menu">
+                            <!--下拉后的选项-->
+                            <li><a href="profile/questions">我的问题</a></li>
+                            <li><a href="#">退出</a></li><!--后续再完善-->
+                        </ul>
+                    </li>
+
+                    <!--▲▲▲登录失败，保持 登录按钮▲▲▲-->
+                    <!--原本的 Link按钮 改成 登录-->
+                    <!--根据GitHub登录功能的教程，这里登录按钮的href需要绑定一个规定的url地址，并（根据规则）配置必要的参数：client_id、redirect_uri、scope、state-->
+                    <li th:if="${session.user == null}">    <!--判断session中的user数据是否不存在-->
+                        <a href="https://github.com/login/oauth/authorize?client_id=9706d72cdbecf1898ce0&redirect_uri=http://localhost:8887/callback&scope=user&state=1">登录</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+</body>
+
+</html>
