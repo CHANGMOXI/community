@@ -13,10 +13,9 @@ import org.apache.ibatis.annotations.Select;
  * @create 2022-07-12 18:12
  **/
 
+//用MyBatis-Plus
 @Mapper
 public interface QuestionDao extends BaseMapper<Question> {
-
-    //自定义查询
-    @Insert("insert into question (title,description,creator,tag,gmt_create,gmt_modified) values (#{title},#{description},#{creator},#{tag},#{gmtCreate},#{gmtModified});")
-    void save(Question question);
+    //与整合MyBatis的不同：继承BaseMapper，指定泛型后，就带有基本的CURD操作的方法
+    //需要定制CRUD，比如按条件查询，可以用LambdaQueryWrapper定制查询条件
 }

@@ -1,9 +1,9 @@
 package life.majiang.community.service.Impl;
 
-import life.majiang.community.dao.QuestionDao;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import life.majiang.community.dao.UserDao;
-import life.majiang.community.domain.Question;
 import life.majiang.community.domain.User;
+import life.majiang.community.dto.PaginationDTO;
 import life.majiang.community.dto.QuestionDTO;
 import life.majiang.community.service.IndexService;
 import life.majiang.community.service.QuestionService;
@@ -32,7 +32,7 @@ public class IndexServiceImpl implements IndexService {
     private QuestionService questionService;
 
     @Override
-    public String index(HttpServletRequest request, Model model) {
+    public String index(HttpServletRequest request, Model model, Integer page, Integer size) {
 
         //********************************** 持久化登录状态 功能 **********************************
 
@@ -50,7 +50,9 @@ public class IndexServiceImpl implements IndexService {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")){
                     String token = cookie.getValue();   //第3步
-                    User userByToken = userDao.selectByToken(token);  //第4步
+                    LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();  //第4步
+                    lqw.eq(User::getToken,token);//查询条件：where token = ?
+                    User userByToken = userDao.selectOne(lqw);//用MyBatis-Plus自带的按条件查询
 
                     if (userByToken != null){
                         request.getSession().setAttribute("user",userByToken);  //第5步
@@ -61,9 +63,9 @@ public class IndexServiceImpl implements IndexService {
         }
         //**************************************************************************************
 
-        //*********************************** 首页问题列表 功能 ***********************************
-        List<QuestionDTO> questionDTOList = questionService.list();//获取所有问题记录(包括头像url地址)
-        model.addAttribute("questions",questionDTOList);//把所有问题记录发送给首页，首页进行显示
+        //*********************************** 首页问题列表、分页功能 ***********************************
+        PaginationDTO paginationDTO = questionService.list(page,size);//获取当前页所有问题记录(包括头像url地址)
+        model.addAttribute("pagination",paginationDTO);//把当前页所有问题记录发送给首页，首页进行显示
 
         //**************************************************************************************
 

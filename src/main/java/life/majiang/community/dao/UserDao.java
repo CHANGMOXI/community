@@ -11,16 +11,9 @@ import org.apache.ibatis.annotations.Select;
  * @create 2022-07-12 18:12
  **/
 
-//用mybatis-plus
+//用MyBatis-Plus
 @Mapper
 public interface UserDao extends BaseMapper<User> {
     //与整合MyBatis的不同：继承BaseMapper，指定泛型后，就带有基本的CURD操作的方法
-
-    //自定义查询
-    @Select("select * from user where token = #{token};")
-    User selectByToken(@Param("token") String token);
-
-    //自定义查询：根据question中的creator查询对应的user
-    @Select("select * from user where account_id = #{accountId};")
-    User selectByAccountId(@Param("accountId") String creator);
+    //需要定制CRUD，比如按条件查询，可以用LambdaQueryWrapper定制查询条件
 }

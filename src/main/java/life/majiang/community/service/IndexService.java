@@ -13,6 +13,6 @@ import javax.servlet.http.HttpServletRequest;
  **/
 public interface IndexService {
 
-    //首页功能：持久化登录状态、首页问题列表
-    String index(HttpServletRequest request, Model model);
+    //首页功能：持久化登录状态、首页问题列表、分页功能
+    String index(HttpServletRequest request, Model model, Integer page, Integer size);
 }

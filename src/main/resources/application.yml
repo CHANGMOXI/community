@@ -23,16 +23,16 @@ spring:
       url: jdbc:mysql://localhost:13306/community?useUnicode=true&characterEncoding=utf8&useSSL=false
       username: root
       password: 123456
-  #Mp相关的配置
-  # 开启日志后，去除冗余信息
+
+#去除spring图标
   main:
     banner-mode: off
 
 #Mp相关的配置
-#开启日志，能看到SQL语句
 mybatis-plus:
-  configuration:
-    #开启日志后，去除冗余信息
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #开启日志，能看到SQL语句
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  去除mybatis-plus图标
   global-config:
     banner: false

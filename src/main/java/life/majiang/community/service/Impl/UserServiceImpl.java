@@ -1,5 +1,6 @@
 package life.majiang.community.service.Impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import life.majiang.community.dao.UserDao;
 import life.majiang.community.domain.User;
 import life.majiang.community.dto.AccessTokenDTO;
@@ -8,7 +9,6 @@ import life.majiang.community.provider.GitHubProvider;
 import life.majiang.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -67,7 +67,9 @@ public class UserServiceImpl implements UserService {
             //GitHub返回的用户信息存在，登录成功
 
             //根据 gitHubUser中的用户id 查询用户信息 是否已经存在于 数据库的表user
-            User userByAccountId = userDao.selectByAccountId(gitHubUser.getId());
+            LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(User::getAccountId,gitHubUser.getId());//查询条件：where account_id = ?
+            User userByAccountId = userDao.selectOne(lqw);//用MyBatis-Plus自带的按条件查询
 
             //新的token，用来 更新已存在的用户token 或 作为新用户的token
             String token = UUID.randomUUID().toString();//生成一个token，写cookie时要用到token

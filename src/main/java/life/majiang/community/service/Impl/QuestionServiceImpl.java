@@ -1,9 +1,13 @@
 package life.majiang.community.service.Impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import life.majiang.community.dao.QuestionDao;
 import life.majiang.community.dao.UserDao;
 import life.majiang.community.domain.Question;
 import life.majiang.community.domain.User;
+import life.majiang.community.dto.PaginationDTO;
 import life.majiang.community.dto.QuestionDTO;
 import life.majiang.community.service.QuestionService;
 import org.springframework.beans.BeanUtils;
@@ -69,7 +73,10 @@ public class QuestionServiceImpl implements QuestionService {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")){
                     String token = cookie.getValue();
-                    userByToken = userDao.selectByToken(token);//根据token去数据库查询对应用户
+
+                    LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
+                    lqw.eq(User::getToken,token);//查询条件：where token = ?
+                    userByToken = userDao.selectOne(lqw);//根据token去数据库查询对应用户
 
                     if (userByToken != null){
                         //如果这个userByToken用户存在，则写入到session
@@ -93,34 +100,58 @@ public class QuestionServiceImpl implements QuestionService {
         question.setCreator(userByToken.getAccountId());//设置creator
         question.setGmtCreate(System.currentTimeMillis());
         question.setGmtModified(question.getGmtCreate());
-
-        questionDao.save(question);//存入表question
+        //存入question表
+        questionDao.insert(question);//用MyBatis-Plus自带的insert，null的属性不会设置
+        //
 
         return "redirect:/";//没有异常，则跳转回(重定向)首页
     }
 
 
-    //首页问题列表功能：查询获得所有QuestionDTO (所有question信息和对应的user信息)
+    //首页问题列表功能(带有分页功能)
     @Override
-    public List<QuestionDTO> list() {
-        //先查询获取所有question
-        List<Question> questionList = questionDao.selectList(null);//使用MyBatis-Plus自带的查询
+    public PaginationDTO list(Integer currentPage, Integer pageSize) {
+        //分页查询之前，要防止页面url传递的currentPage超过总页数，导致分页查询结果为空
+        Integer totalCount = questionDao.selectCount(null);//用MyBatis-Plus自带的查询总数
+        int totalPage = 0;
+        if (totalCount % pageSize == 0){
+            totalPage = totalCount / pageSize;
+        }else {
+            totalPage = (totalCount / pageSize) + 1;
+        }
+        if (currentPage < 1){
+            currentPage = 1;
+        }
+        if (currentPage > totalPage){
+            currentPage = totalPage;
+        }
+        //使用MyBatis-Plus自带的分页查询 获取 当前页所有question
+        IPage<Question> page = new Page<>(currentPage,pageSize);
+        questionDao.selectPage(page, null);
+        List<Question> currentPageQuestions = page.getRecords();
 
-        ArrayList<QuestionDTO> questionDTOArrayList = new ArrayList<>();
+        List<QuestionDTO> questionDTOList = new ArrayList<>();//存放 当前页的 所有问题记录(所有QuestionDTO)
 
-        for (Question question : questionList) {
-            //根据question中的creator(也就是account_id)查询对应的user
-            User user = userDao.selectByAccountId(question.getCreator());
+        PaginationDTO paginationDTO = new PaginationDTO();//代表当前页的PaginationDTO对象
 
-            //把question信息和对应的user信息放进questionDTO
+        for (Question question : currentPageQuestions) {
+            //根据每一个question中的creator(也就是account_id)查询对应的user
+            LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(User::getAccountId,question.getCreator());//查询条件：where account_id = ?
+            User user = userDao.selectOne(lqw);//用MyBatis-Plus自带的按条件查询
+
+            //把每一个question信息和对应的user信息 放进 每一个questionDTO
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);//利用工具类，快速复制question信息
             questionDTO.setUser(user);//设置user信息
 
-            //一条问题记录 作为 一个questionDTO对象，放进list中
-            questionDTOArrayList.add(questionDTO);
+            //依次把 当前页的 所有问题记录(所有QuestionDTO) 放进 questionDTOList
+            questionDTOList.add(questionDTO);
         }
 
-        return questionDTOArrayList;
+        //设置 代表当前页的PaginationDTO对象 的各个属性，最后一个形参为 当前页码 前后最多可展示的页码
+        paginationDTO.setPagination(questionDTOList,page.getPages(),currentPage,3);
+
+        return paginationDTO;
     }
 }

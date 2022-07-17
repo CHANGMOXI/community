@@ -9,7 +9,7 @@
 [GitHub OAuth](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)  
 [MyBatis-Plus](https://baomidou.com/)  
 [BootStrap](https://v3.bootcss.com/getting-started/)  
-[Thymeleaf](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#using-theach)  
+[Thymeleaf](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html)  
 
 ## 工具
 [Git](https://git-scm.com/)  

@@ -1,16 +1,11 @@
 package life.majiang.community.controller;
 
-import life.majiang.community.dao.QuestionDao;
-import life.majiang.community.dao.UserDao;
-import life.majiang.community.domain.Question;
-import life.majiang.community.domain.User;
 import life.majiang.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 /**
