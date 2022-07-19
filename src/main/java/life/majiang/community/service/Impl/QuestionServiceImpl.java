@@ -77,9 +77,7 @@ public class QuestionServiceImpl implements QuestionService {
         //根据传进来的id验证，存在则更新(update)，不存在则新增(insert)
         if (id != null){
             //问题已经存在，更新问题
-            LambdaQueryWrapper<Question> lqw = new LambdaQueryWrapper<>();
-            lqw.eq(Question::getId,id);
-            Question question = questionDao.selectOne(lqw);//查询获取已经存在的问题
+            Question question = questionDao.selectById(id);//查询获取已经存在的问题
 
             question.setTitle(title);
             question.setDescription(description);
@@ -203,17 +201,22 @@ public class QuestionServiceImpl implements QuestionService {
         return myPaginationDTO;
     }
 
-    //问题详情功能
+    //问题详情功能(累加阅读数)
     @Override
     public String question(Integer id, Model model) {
-        LambdaQueryWrapper<Question> lqwQuestion = new LambdaQueryWrapper<>();
-        lqwQuestion.eq(Question::getId,id);
-        Question question = questionDao.selectOne(lqwQuestion);
+        //查询获取当前问题
+        Question question = questionDao.selectById(id);
         //异常处理：问题可能不存在(id不存在)
         if (question == null){
             throw new BusinessException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
 
+        //阅读数+1
+        question.setViewCount(question.getViewCount() + 1);
+        //更新阅读数
+        questionDao.updateById(question);//加入了乐观锁
+
+        //查询获取问题作者的用户信息
         LambdaQueryWrapper<User> lqwUser = new LambdaQueryWrapper<>();
         lqwUser.eq(User::getAccountId,question.getCreator());
         User user = userDao.selectOne(lqwUser);
@@ -231,9 +234,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public String edit(Integer id, Model model) {
         //查询获取当前问题
-        LambdaQueryWrapper<Question> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(Question::getId,id);
-        Question question = questionDao.selectOne(lqw);
+        Question question = questionDao.selectById(id);
 
         //将问题信息回显到发布页面
         model.addAttribute("title",question.getTitle());

@@ -2,6 +2,7 @@ package life.majiang.community.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Data;
 
 /**
@@ -11,7 +12,7 @@ import lombok.Data;
 
 @Data
 public class Question {
-    //指定mybatis-plus的id生成策略为 自增，否则使用MP自带的insert时，id为雪花算法生成的很长的数字
+    //指定MyBatis-Plus的id生成策略为 自增，否则使用MP自带的insert时，id为雪花算法生成的很长的数字
     @TableId(type = IdType.AUTO)
     private Integer id;
 
@@ -24,4 +25,7 @@ public class Question {
     private String tag;
     private Long gmtCreate;
     private Long gmtModified;
+
+    @Version
+    private Integer version;//乐观锁的版本号
 }

@@ -24,6 +24,7 @@ public class QuestionDTO {
     private String tag;
     private Long gmtCreate;
     private Long gmtModified;
+    private Integer version;
 
     //首页问题列表功能中，因为Question不能直接加上user属性(为了获取头像url地址等信息)
     // ---> 通过用户account_id查询出的用户信息(包括头像url地址等)，将放在DTO这里

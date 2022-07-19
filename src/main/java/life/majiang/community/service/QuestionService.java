@@ -29,4 +29,5 @@ public interface QuestionService {
 
     //更新问题功能
     String edit(Integer id, Model model);
+
 }
