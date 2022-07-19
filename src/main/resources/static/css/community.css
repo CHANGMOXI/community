@@ -33,5 +33,9 @@ body {
     color: #999;
     font-size: 13px;
 }
+/* 错误页样式 */
+.jumbotron {
+    margin: 100px;
+}
 
 

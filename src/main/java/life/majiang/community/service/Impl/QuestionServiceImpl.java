@@ -9,6 +9,8 @@ import life.majiang.community.domain.Question;
 import life.majiang.community.domain.User;
 import life.majiang.community.dto.PaginationDTO;
 import life.majiang.community.dto.QuestionDTO;
+import life.majiang.community.exception.BusinessException;
+import life.majiang.community.exception.CustomizeErrorCode;
 import life.majiang.community.service.QuestionService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +86,11 @@ public class QuestionServiceImpl implements QuestionService {
             question.setTag(tag);
             question.setGmtModified(System.currentTimeMillis());
 
-            questionDao.updateById(question);//更新问题
+            int update = questionDao.updateById(question);//更新问题
+            //异常处理：更新问题之前，问题可能已被删除
+            if (update != 1){
+                throw new BusinessException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }else {
             //问题不存在，新增问题
             Question question = new Question();
@@ -203,6 +209,10 @@ public class QuestionServiceImpl implements QuestionService {
         LambdaQueryWrapper<Question> lqwQuestion = new LambdaQueryWrapper<>();
         lqwQuestion.eq(Question::getId,id);
         Question question = questionDao.selectOne(lqwQuestion);
+        //异常处理：问题可能不存在(id不存在)
+        if (question == null){
+            throw new BusinessException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
 
         LambdaQueryWrapper<User> lqwUser = new LambdaQueryWrapper<>();
         lqwUser.eq(User::getAccountId,question.getCreator());

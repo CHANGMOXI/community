@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>码匠社区</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <!--连接 样式文件-->
+
+    <!-- css样式文件 -->
+    <!--templates下的文件可以直接访问到同一个父目录下static的文件-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/community.css"/><!--引入自己的样式文件(用在"发现"页面)-->
+
+    <!-- js样式文件 -->
+    <script src="/js/jquery-3.6.0.min.js"></script><!--用于下拉菜单，并且要在js文件中的第一个位置-->
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+
+<body>
+<!--****************************************** 引入导航条模块 ******************************************-->
+<div th:insert="~{navigation :: nav}"></div><!--模块html文件名称 :: 模块名称-->
+
+<!--*********************************** 404、5xx异常的代替页面 ***********************************-->
+<div class="jumbotron">
+    <h1>出错了！！！</h1>
+    <p th:text="${message}">服务太热啦，请稍后再试</p>
+    <p><a class="btn btn-primary btn-lg" href="/" role="button">回到主页</a></p>
+</div>
+
+</body>
+</html>
