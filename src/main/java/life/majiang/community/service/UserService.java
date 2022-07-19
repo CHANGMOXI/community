@@ -1,5 +1,10 @@
 package life.majiang.community.service;
 
+import life.majiang.community.domain.User;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +20,9 @@ public interface UserService {
     //GitHub登录功能：完成登录并显示登录状态
     String loginByGitHub(String code, HttpServletRequest request, HttpServletResponse response);
 
-//    //GitHub登录功能：持久化登录状态
-//    String persistLogin(HttpServletRequest request);
+    //退出登录功能
+    String logout(HttpServletRequest request, HttpServletResponse response);
+
+    //个人中心功能
+    String profile(HttpServletRequest request, Model model, String action, Integer page, Integer size);
 }

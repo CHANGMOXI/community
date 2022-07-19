@@ -25,15 +25,26 @@ public class PublishController {
 
     @GetMapping
     public String publish(){
+        //所有页面持久化登录状态 交给 拦截器
+
         return "publish";//跳转到publish页面
     }
 
     @PostMapping
-    public String doPublish(@RequestParam("title") String title,
-                            @RequestParam("description") String description,
-                            @RequestParam("tag") String tag, HttpServletRequest request, Model model){
+    public String doPublish(@RequestParam(value = "title",required = false) String title,
+                            @RequestParam(value = "description",required = false) String description,
+                            @RequestParam(value = "tag",required = false) String tag,
+                            @RequestParam(value = "id",required = false) Integer id,
+                            HttpServletRequest request, Model model){
 
-        return questionService.doPublish(title,description,tag,request,model);
+        return questionService.doPublish(title,description,tag,id,request,model);
 
     }
+
+    @GetMapping("/{id}")
+    public String edit(@PathVariable(name = "id") Integer id, Model model){
+
+        return questionService.edit(id,model);
+    }
+
 }

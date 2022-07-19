@@ -31,4 +31,9 @@ public class AuthorizeController {
         return userService.loginByGitHub(code, request, response);
 
     }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response){
+        return userService.logout(request,response);
+    }
 }

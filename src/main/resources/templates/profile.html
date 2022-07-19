@@ -1,37 +1,33 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>码匠社区</title>
+    <title th:text="${sectionName}"></title><!--显示controller传回来的sectionName-->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
     <!--连接 样式文件-->
 
     <!-- css样式文件 -->
-    <!--templates下的文件可以直接访问到同一个父目录下static的文件-->
-    <link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
-    <link rel="stylesheet" href="css/community.css"/><!--引入自己的样式文件(用在"发现"页面)-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/community.css"/><!--引入自己的样式文件(用在"发现"页面)-->
 
     <!-- js样式文件 -->
-    <script src="js/jquery-3.6.0.min.js"></script><!--用于下拉菜单，并且要在js文件中的第一个位置-->
-    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/jquery-3.6.0.min.js"></script><!--用于下拉菜单，并且要在js文件中的第一个位置-->
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 </head>
 
 <body>
 <!--****************************************** 引入导航条模块 ******************************************-->
 <div th:insert="~{navigation :: nav}"></div><!--模块html文件名称 :: 模块名称-->
 
-<!--*********************************** 这里开始是首页 "问题列表" 的部分 ***********************************-->
-<div class="container-fluid main">  <!--使用自己的样式文件写的样式-->
+<!--************************************ 这里开始是 "个人中心" 的部分 ************************************-->
+<div class="container-fluid main profile">  <!--使用自己的样式文件写的样式-->
     <div class="row">
-        <!--col-lo-9和col-lg-3表示 发起页面 全屏(≥1200px)时，两个部分左右比例为3:1-->
-        <!--两个col-md-12表示 发起页面 中等大小(≥992px) 时，两个部分都占满整个页面，但不再是左右布局而是上下布局-->
-        <!--发起页面 继续变小时，都是占满整个页面，并且是上下布局-->
 
-        <!--1."发现" 部分-->
+        <!--1.左边部分-->
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <!--"发现" 部分的图标和名字-->
-            <h2><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 发现</h2>
+            <!--个人中心里面的不同选项-->
+            <h2><span th:text="${sectionName}"></span></h2><!--显示controller传回来的sectionName-->
             <hr>
 
             <!--问题记录的样式-->
@@ -63,30 +59,30 @@
                 <ul class="pagination">
                     <!--首页按钮-->
                     <li th:if="${pagination.showFirstPage}">
-                        <a href="/?page=1" aria-label="FirstPage">
+                        <a th:href="@{./{section}(page=1,section=${section})}" aria-label="FirstPage">
                             <span aria-hidden="true">&lt;&lt;</span>
                         </a>
                     </li>
                     <!--上一页按钮-->
                     <li th:if="${pagination.showPrevious}">
-                        <a th:href="@{/(page=${pagination.currentPage - 1})}" aria-label="Previous">
+                        <a th:href="@{./{section}(page=${pagination.currentPage - 1},section=${section})}" aria-label="Previous">
                             <span aria-hidden="true">&lt;</span>
                         </a>
                     </li>
                     <!-- each循环遍历 展示页码 -->
                     <li th:each="page : ${pagination.pages}"
                         th:class="${pagination.currentPage == page} ? 'active' : ''"><!--当前页高亮-->
-                        <a th:href="@{/(page=${page})}" th:text="${page}"></a>
+                        <a th:href="@{./{section}(page=${page},section=${section})}" th:text="${page}"></a>
                     </li>
                     <!--下一页按钮-->
                     <li th:if="${pagination.showNext}">
-                        <a th:href="@{/(page=${pagination.currentPage + 1})}" aria-label="Next">
+                        <a th:href="@{./{section}(page=${pagination.currentPage + 1},section=${section})}" aria-label="Next">
                             <span aria-hidden="true">&gt;</span>
                         </a>
                     </li>
                     <!--末尾页按钮-->
                     <li th:if="${pagination.showEndPage}">
-                        <a th:href="@{/(page=${pagination.totalPage})}" aria-label="EndPage">
+                        <a th:href="@{./{section}(page=${pagination.totalPage},section=${section})}" aria-label="EndPage">
                             <span aria-hidden="true">&gt;&gt;</span>
                         </a>
                     </li>
@@ -95,9 +91,15 @@
 
         </div>
 
-        <!--2."热门话题" 部分-->
+        <!--2.右边部分-->
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-            <h3>热门话题</h3>
+            <div class="list-group section">
+                <a href="/profile/questions" th:class="${section == 'questions'} ? 'list-group-item active' : 'list-group-item'">我的问题</a>
+                <a href="/profile/replies" th:class="${section == 'replies'} ? 'list-group-item active' : 'list-group-item'">
+                    最新回复
+                    <span class="badge">14</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>

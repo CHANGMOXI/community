@@ -30,6 +30,7 @@ public class IndexController {
     public String index(HttpServletRequest request, Model model,
                         @RequestParam(name = "page",defaultValue = "1") Integer page,
                         @RequestParam(name = "size",defaultValue = "5") Integer size){
+        //所有页面持久化登录状态 交给 拦截器
 
         return indexService.index(request,model,page,size);
     }

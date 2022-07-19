@@ -15,7 +15,7 @@ public class User {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
-    private String accountId;
+    private Integer accountId;
     private String name;
     private String token;
     private Long gmtCreate;

@@ -24,5 +24,14 @@ body {
     font-weight: normal;
     color: #999;
 }
+/* 个人中心列表组样式 */
+.profile .section {
+    margin-top: 15px;
+}
+/* 问题详情页面 编辑按钮样式 */
+.community-menu {
+    color: #999;
+    font-size: 13px;
+}
 
 

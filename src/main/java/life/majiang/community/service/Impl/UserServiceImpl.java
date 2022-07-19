@@ -5,11 +5,14 @@ import life.majiang.community.dao.UserDao;
 import life.majiang.community.domain.User;
 import life.majiang.community.dto.AccessTokenDTO;
 import life.majiang.community.dto.GitHubUser;
+import life.majiang.community.dto.PaginationDTO;
 import life.majiang.community.provider.GitHubProvider;
+import life.majiang.community.service.QuestionService;
 import life.majiang.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +43,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private QuestionService questionService;
 
     //GitHub登录功能：完成登录并显示登录状态
     @Override
@@ -99,15 +105,10 @@ public class UserServiceImpl implements UserService {
 
 
             //登录成功，写 session 和 cookie
-            //1.这里 写session ---> 为了在首次登录时，把user信息写入session
-            //                   ---> 这样首页index.html能根据user信息是否为空，在首次登录成功后显示 用户名
-            //如果这里不把user写入session中，即使首次登录成功，也没有user的用户名信息，无法显示用户名，后续持久化更新状态也无法显示用户名
-            request.getSession().setAttribute("user",gitHubUser);
-
-            //2.写cookie ---> 把生成的token放到cookie中，response返回给客户端(用户浏览器)
-            //            ---> 客户端(用户浏览器)后续以不同窗口(标签页)访问首页时会发送相同的cookie回来
-            //             ---> 服务端(码匠社区)获取cookie并根据里面的token来验证，实现持久化登录状态
-            //              ---> 在IndexController.javawa中完成
+            //写cookie ---> 把生成的token放到cookie中，response返回给客户端(用户浏览器)
+            //          ---> 客户端(用户浏览器)后续继续访问首页时会发送相同的cookie回来
+            //           ---> 服务端(码匠社区)获取cookie并根据里面的token来验证，实现持久化登录状态
+            //            ---> 在IndexController.javawa中完成
             response.addCookie(new Cookie("token",token));
         }
 
@@ -118,6 +119,44 @@ public class UserServiceImpl implements UserService {
         //导致 无法显示问题列表，因为这个地址并不是 根目录http://localhost:8887/
         //▲▲▲目前解决方案▲▲▲ ---> application.yml配置server.servlet.session.tracking-modes: cookie
         //                                         server.servlet.session.cookie.http-only: true
+    }
+
+    //退出登录功能
+    @Override
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        //移除session中的user信息
+        request.getSession().removeAttribute("user");
+        //移除cookie中的token
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return "redirect:/";//退出后跳转回(重定向)首页
+    }
+
+    //个人中心功能
+    @Override
+    public String profile(HttpServletRequest request, Model model, String action, Integer page, Integer size) {
+
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null){
+            return "redirect:/";//如果没有用户信息，则跳转到首页进行登录
+        }
+
+        if ("questions".equals(action)) {
+            //我的提问 部分
+            model.addAttribute("section","questions");
+            model.addAttribute("sectionName","我的提问");
+
+            PaginationDTO myPaginationDTO = questionService.list(user.getAccountId(), page, size);//获取当前用户当前页所有问题记录(包括头像url地址)
+            model.addAttribute("pagination",myPaginationDTO);//把当前用户当前页所有问题记录发送给首页，首页进行显示
+        } else if ("replies".equals(action)) {
+            //最新回复 部分
+            model.addAttribute("section","replies");
+            model.addAttribute("sectionName","最新回复");
+        }
+
+        return "profile";
     }
 
 }

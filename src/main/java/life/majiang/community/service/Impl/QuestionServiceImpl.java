@@ -38,7 +38,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     //发布问题功能
     @Override
-    public String doPublish(String title, String description, String tag, HttpServletRequest request, Model model) {
+    public String doPublish(String title, String description, String tag, Integer id, HttpServletRequest request, Model model) {
         //页面传递了title、description、tag，还需要获取creator
 
         //即使有异常，也能拿到输入的信息，在publish页面继续回显信息
@@ -61,52 +61,45 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         //关于creator的获取
-        //1.原本思路：像持久化登录状态一样，获取cookie，用里面的token查询数据库获得user，user里的account_id也就是creator
-        //2.我的思路：直接从session里面获取gitHubUser的id，也就是creator
-        //      ---> 在UserServiceImpl的loginByGitHub方法中，首次登录第一次写session时，就把giHubUser写入session，里面就有用户id
-        //       ---> 可能的不足：session默认无操作30分钟就会销毁，而cookie能保持更长时间
-
-        //获取creator原本思路
-        User userByToken = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length >0){  //判断cookie有没有内容
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")){
-                    String token = cookie.getValue();
-
-                    LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
-                    lqw.eq(User::getToken,token);//查询条件：where token = ?
-                    userByToken = userDao.selectOne(lqw);//根据token去数据库查询对应用户
-
-                    if (userByToken != null){
-                        //如果这个userByToken用户存在，则写入到session
-                        request.getSession().setAttribute("user",userByToken);
-                    }
-                    break;
-                }
-            }
-        }
+        //思路：访问页面时，拦截器进行持久化登录状态，其中会获取cookie，用里面的token查询数据库获得user并写入session
+        //          ---> 只需获取session里面的user，里面的account_id就是creator
+        //可能的不足：session默认无操作30分钟就会销毁，而cookie能保持更长时间
+        User userByToken = (User) request.getSession().getAttribute("user");
         //如果这个userByToken用户不存在，给出提示信息
         if (userByToken == null){
             model.addAttribute("error","用户未登录");
             return "publish";//有异常，则跳转回publish页面
         }
 
-        //用户存在且绑定到session后，将文章信息存入数据库(表question)
-        Question question = new Question();
-        question.setTitle(title);
-        question.setDescription(description);
-        question.setTag(tag);
-        question.setCreator(userByToken.getAccountId());//设置creator
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
-        //存入question表
-        questionDao.insert(question);//用MyBatis-Plus自带的insert，null的属性不会设置
-        //
+        //用户存在，则需要验证问题是否已经存在
+        //根据传进来的id验证，存在则更新(update)，不存在则新增(insert)
+        if (id != null){
+            //问题已经存在，更新问题
+            LambdaQueryWrapper<Question> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(Question::getId,id);
+            Question question = questionDao.selectOne(lqw);//查询获取已经存在的问题
+
+            question.setTitle(title);
+            question.setDescription(description);
+            question.setTag(tag);
+            question.setGmtModified(System.currentTimeMillis());
+
+            questionDao.updateById(question);//更新问题
+        }else {
+            //问题不存在，新增问题
+            Question question = new Question();
+            question.setTitle(title);
+            question.setDescription(description);
+            question.setTag(tag);
+            question.setCreator(userByToken.getAccountId());//设置creator
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+
+            questionDao.insert(question);//用MyBatis-Plus自带的insert，null的属性不会设置
+        }
 
         return "redirect:/";//没有异常，则跳转回(重定向)首页
     }
-
 
     //首页问题列表功能(带有分页功能)
     @Override
@@ -149,9 +142,98 @@ public class QuestionServiceImpl implements QuestionService {
             questionDTOList.add(questionDTO);
         }
 
-        //设置 代表当前页的PaginationDTO对象 的各个属性，最后一个形参为 当前页码 前后最多可展示的页码
+        //设置 代表当前页的PaginationDTO对象 的各个属性，最后一个形参为 当前页码前后最多可展示的页码
         paginationDTO.setPagination(questionDTOList,page.getPages(),currentPage,3);
 
         return paginationDTO;
     }
+
+    //个人中心展示我的问题(带有分页功能)
+    @Override
+    public PaginationDTO list(Integer creator, Integer currentPage, Integer pageSize) {
+        //分页查询之前，要防止页面url传递的currentPage超过总页数，导致分页查询结果为空
+        LambdaQueryWrapper<Question> lqwQuestion = new LambdaQueryWrapper<>();
+        lqwQuestion.eq(Question::getCreator, creator);//查询creator对应的问题总数
+        Integer totalCount = questionDao.selectCount(lqwQuestion);//用MyBatis-Plus自带的查询总数
+        int totalPage = 0;
+        if (totalCount % pageSize == 0) {
+            totalPage = totalCount / pageSize;
+        } else {
+            totalPage = (totalCount / pageSize) + 1;
+        }
+        if (currentPage < 1) {
+            currentPage = 1;
+        }
+        if (currentPage > totalPage) {
+            currentPage = totalPage;
+        }
+        //使用MyBatis-Plus自带的分页查询 获取 当前用户当前页所有question
+        IPage<Question> page = new Page<>(currentPage, pageSize);
+        questionDao.selectPage(page, lqwQuestion);
+        List<Question> currentPageMyQuestions = page.getRecords();
+
+        List<QuestionDTO> myQuestionDTOList = new ArrayList<>();//存放 当前用户当前页的 所有问题记录(所有QuestionDTO)
+
+        PaginationDTO myPaginationDTO = new PaginationDTO();//代表当前用户当前页的PaginationDTO对象
+
+        //根据creator查询当前用户信息
+        LambdaQueryWrapper<User> lqwUser = new LambdaQueryWrapper<>();
+        lqwUser.eq(User::getAccountId, creator);
+        User user = userDao.selectOne(lqwUser);
+
+        for (Question question : currentPageMyQuestions) {
+            //把每一个question信息和当前user信息 放进 每一个questionDTO
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(question, questionDTO);//利用工具类，快速复制question信息
+            questionDTO.setUser(user);//设置user信息
+
+            //依次把 当前用户当前页的 所有问题记录(所有QuestionDTO) 放进 questionDTOList
+            myQuestionDTOList.add(questionDTO);
+        }
+
+        //设置 代表当前用户当前页的PaginationDTO对象 的各个属性，最后一个形参为 当前页码前后最多可展示的页码
+        myPaginationDTO.setPagination(myQuestionDTOList, page.getPages(), currentPage, 3);
+
+        return myPaginationDTO;
+    }
+
+    //问题详情功能
+    @Override
+    public String question(Integer id, Model model) {
+        LambdaQueryWrapper<Question> lqwQuestion = new LambdaQueryWrapper<>();
+        lqwQuestion.eq(Question::getId,id);
+        Question question = questionDao.selectOne(lqwQuestion);
+
+        LambdaQueryWrapper<User> lqwUser = new LambdaQueryWrapper<>();
+        lqwUser.eq(User::getAccountId,question.getCreator());
+        User user = userDao.selectOne(lqwUser);
+
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question,questionDTO);
+        questionDTO.setUser(user);
+
+        model.addAttribute("question",questionDTO);
+
+        return "question";//跳转回question页面
+    }
+
+    //更新问题功能
+    @Override
+    public String edit(Integer id, Model model) {
+        //查询获取当前问题
+        LambdaQueryWrapper<Question> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(Question::getId,id);
+        Question question = questionDao.selectOne(lqw);
+
+        //将问题信息回显到发布页面
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescription());
+        model.addAttribute("tag",question.getTag());
+
+        //返回问题id给发布页面，发布页面提交表单时会把id(有值或null)也提交，方便在doPublish方法中 更新/新增问题
+        model.addAttribute("id",question.getId());
+
+        return "publish";
+    }
+
 }
