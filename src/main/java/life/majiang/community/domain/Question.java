@@ -26,6 +26,4 @@ public class Question {
     private Long gmtCreate;
     private Long gmtModified;
 
-    @Version
-    private Integer version;//乐观锁的版本号
 }

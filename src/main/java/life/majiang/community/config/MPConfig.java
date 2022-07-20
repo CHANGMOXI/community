@@ -20,8 +20,8 @@ public class MPConfig{
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();//拦截器的壳
         //添加分页拦截器
         mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
-        //添加乐观锁拦截器
-        mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+//        //添加乐观锁拦截器
+//        mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         return mybatisPlusInterceptor;
     }
 }

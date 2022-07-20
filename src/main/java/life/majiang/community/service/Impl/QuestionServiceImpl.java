@@ -1,6 +1,7 @@
 package life.majiang.community.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import life.majiang.community.dao.QuestionDao;
@@ -211,18 +212,22 @@ public class QuestionServiceImpl implements QuestionService {
             throw new BusinessException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
 
-        //阅读数+1
-        question.setViewCount(question.getViewCount() + 1);
         //更新阅读数
-        questionDao.updateById(question);//加入了乐观锁
+        //UPDATE question SET `view_count` = `view_count` + 1 WHERE (id = ?)
+        LambdaUpdateWrapper<Question> luw = new LambdaUpdateWrapper<>();
+        luw.eq(Question::getId,question.getId()).setSql("`view_count` = `view_count` + 1");
+        questionDao.update(null,luw);
 
         //查询获取问题作者的用户信息
         LambdaQueryWrapper<User> lqwUser = new LambdaQueryWrapper<>();
         lqwUser.eq(User::getAccountId,question.getCreator());
         User user = userDao.selectOne(lqwUser);
 
+        //查询获取当前问题的最新状态(阅读数)
+        Question latestQuestion = questionDao.selectById(id);
+
         QuestionDTO questionDTO = new QuestionDTO();
-        BeanUtils.copyProperties(question,questionDTO);
+        BeanUtils.copyProperties(latestQuestion,questionDTO);
         questionDTO.setUser(user);
 
         model.addAttribute("question",questionDTO);
