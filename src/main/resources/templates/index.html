@@ -15,7 +15,23 @@
     <!-- js样式文件 -->
     <script src="js/jquery-3.6.0.min.js"></script><!--用于下拉菜单，并且要在js文件中的第一个位置-->
     <script src="js/bootstrap.min.js" type="application/javascript"></script>
+
+
 </head>
+
+<!--验证是否关闭登录页面(未登录就回复的情况)-->
+<script type="application/javascript">
+    window.onload = function () {
+        let isClose = window.localStorage.getItem("isClose");
+        if (isClose == "true"){
+            //如果浏览器已经存了isClose并且为true，则关闭登录页面
+            window.close();
+            //验证成功，关闭登录页面后，移除isClose
+            window.localStorage.removeItem("isClose");
+            //只有 提示未登录并确认跳转登录页面 才会存储isClose，最后都移除isClose，这样其他情况登录后就不会关闭页面
+        }
+    }
+</script>
 
 <body>
 <!--****************************************** 引入导航条模块 ******************************************-->

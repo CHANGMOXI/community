@@ -12,30 +12,103 @@ body {
     margin-bottom: 15px;
 }
 
+
 /* 首页问题列表 */
 /* 头像框大小 */
 .media-object {
     width: 60px;
     height: 60px;
 }
+
+
+/* 问题详情页面 */
+/* 问题标题样式 */
+.question-title {
+    margin-top: 25px;
+}
+/* 编辑按钮样式 */
+.community-menu {
+    display: block;
+    color: #999;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+/* 问题发起人、回复人头像框大小 */
+.comment-avatar {
+    width: 40px;
+    height: 40px;
+}
+/* 用户名位置 */
+.username {
+    padding-top: 10px;
+}
+/* 回复内容输入框 */
+.comment {
+    margin: 10px 0;
+}
+/* 回复按钮 */
+.btn-comment {
+    float: right;
+    margin-bottom: 15px;
+}
+/* 回复列表分割线 */
+.comment-divider {
+    margin-top: 0;
+}
+/* 问题的回复的样式 */
+.menu {
+    color: #999;
+    margin-top: 5px;
+}
+.menu .active {
+    /*展开二级评论，图标变蓝色*/
+    color: #499ef3;
+}
+.menu .icon {
+    margin-right: 6px;
+    /*鼠标小手*/
+    cursor: pointer;
+
+}
+.menu .icon:hover{
+    /*鼠标悬浮图标变蓝色*/
+    color: #499ef3;
+}
+/* 问题的回复的边框 */
+.comments {
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+/* 二级评论的边框 */
+.sub-comments {
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+    padding-top: 15px;
+}
+.sub-comments .btn {
+    margin: 10px 0;
+}
+
+
 /* 灰字：回复数、浏览数、发布时间 */
 .text-desc {
     font-size: 12px;
     font-weight: normal;
     color: #999;
 }
+
+
 /* 个人中心列表组样式 */
 .profile .section {
     margin-top: 15px;
 }
-/* 问题详情页面 编辑按钮样式 */
-.community-menu {
-    color: #999;
-    font-size: 13px;
-}
+
+
 /* 错误页样式 */
 .jumbotron {
     margin: 100px;
 }
-
 

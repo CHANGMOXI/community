@@ -8,17 +8,19 @@ import life.majiang.community.dao.QuestionDao;
 import life.majiang.community.dao.UserDao;
 import life.majiang.community.domain.Question;
 import life.majiang.community.domain.User;
+import life.majiang.community.dto.CommentDTO;
 import life.majiang.community.dto.PaginationDTO;
 import life.majiang.community.dto.QuestionDTO;
-import life.majiang.community.exception.BusinessException;
-import life.majiang.community.exception.CustomizeErrorCode;
+import life.majiang.community.enums.CommentTypeEnum;
+import life.majiang.community.exception.CustomizeException;
+import life.majiang.community.enums.CustomizeStatusCode;
+import life.majiang.community.service.CommentService;
 import life.majiang.community.service.QuestionService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private CommentService commentService;
 
     //发布问题功能
     @Override
@@ -88,7 +93,7 @@ public class QuestionServiceImpl implements QuestionService {
             int update = questionDao.updateById(question);//更新问题
             //异常处理：更新问题之前，问题可能已被删除
             if (update != 1){
-                throw new BusinessException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+                throw new CustomizeException(CustomizeStatusCode.QUESTION_NOT_FOUND);
             }
         }else {
             //问题不存在，新增问题
@@ -209,7 +214,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionDao.selectById(id);
         //异常处理：问题可能不存在(id不存在)
         if (question == null){
-            throw new BusinessException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            throw new CustomizeException(CustomizeStatusCode.QUESTION_NOT_FOUND);
         }
 
         //更新阅读数
@@ -230,7 +235,12 @@ public class QuestionServiceImpl implements QuestionService {
         BeanUtils.copyProperties(latestQuestion,questionDTO);
         questionDTO.setUser(user);
 
+        //获取问题的回复列表(按时间倒序)
+        List<CommentDTO> commentDTOList = commentService.list(id,CommentTypeEnum.QUESTION);
+
+        //发送给前端
         model.addAttribute("question",questionDTO);
+        model.addAttribute("comments",commentDTOList);
 
         return "question";//跳转回question页面
     }
