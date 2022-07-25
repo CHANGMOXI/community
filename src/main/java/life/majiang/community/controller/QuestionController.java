@@ -1,7 +1,5 @@
 package life.majiang.community.controller;
 
-import jdk.nashorn.internal.ir.ReturnNode;
-import life.majiang.community.dao.QuestionDao;
 import life.majiang.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

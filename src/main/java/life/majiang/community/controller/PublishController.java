@@ -1,5 +1,6 @@
 package life.majiang.community.controller;
 
+import life.majiang.community.cache.TagCache;
 import life.majiang.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,8 +25,11 @@ public class PublishController {
     private QuestionService questionService;
 
     @GetMapping
-    public String publish(){
+    public String publish(Model model){
         //所有页面持久化登录状态 交给 拦截器
+
+        //把标签缓存发送给前端展示
+        model.addAttribute("tags", TagCache.get());
 
         return "publish";//跳转到publish页面
     }

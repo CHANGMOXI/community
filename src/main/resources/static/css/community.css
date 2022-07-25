@@ -26,9 +26,12 @@ body {
 .question-title {
     margin-top: 25px;
 }
+/* 问题标签样式 */
+.question-tag {
+    margin-right: 5px;
+}
 /* 编辑按钮样式 */
 .community-menu {
-    display: block;
     color: #999;
     font-size: 13px;
     margin-bottom: 15px;
@@ -41,6 +44,16 @@ body {
 /* 用户名位置 */
 .username {
     padding-top: 10px;
+}
+/* 相关问题样式 */
+.question-related {
+    line-height: 20px;
+    list-style: none;
+    padding-left: 0;
+}
+/* community项目网址二维码样式 */
+.community-QRCode {
+    width: 100%;
 }
 /* 回复内容输入框 */
 .comment {
@@ -90,6 +103,20 @@ body {
 }
 .sub-comments .btn {
     margin: 10px 0;
+}
+
+
+/* 发布问题页面 */
+/* 标签组样式 */
+.publish-tag-tab {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+.publish-tag-tab .label-info {
+    margin: 5px 5px;
+    white-space: normal;
+    display: inline-block;
 }
 
 

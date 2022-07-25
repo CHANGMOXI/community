@@ -3,6 +3,8 @@ package life.majiang.community.dto;
 import life.majiang.community.domain.User;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author CZS
  * @create 2022-07-14 12:45
@@ -21,7 +23,7 @@ public class QuestionDTO {
     private Integer commentCount;
     private Integer viewCount;
     private Integer likeCount;
-    private String tag;
+    private List<String> tagList;//在后端分隔所有tag，每个tag放在List中
     private Long gmtCreate;
     private Long gmtModified;
 

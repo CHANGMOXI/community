@@ -15,6 +15,8 @@
     <!-- js样式文件 -->
     <script src="/js/jquery-3.6.0.min.js"></script><!--用于下拉菜单，并且要在js文件中的第一个位置-->
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/community.js" type="application/javascript"></script>
+
 </head>
 
 <body>
@@ -37,7 +39,8 @@
                 <!--"问题标题"输入框-->
                 <div class="form-group">
                     <label for="title">问题标题（简单扼要）:</label>
-                    <input type="text" class="form-control" th:value="${title}" id="title" name="title" placeholder="问题标题...">
+                    <input type="text" class="form-control" th:value="${title}" id="title" name="title"
+                           autocomplete="off" placeholder="问题标题...">
                 </div>
                 <!--"问题补充"输入框-->
                 <div class="form-group">
@@ -47,10 +50,38 @@
                 <!--"添加标签"输入框-->
                 <div class="form-group">
                     <label for="tag">添加标签:</label>
-                    <input type="text" class="form-control" th:value="${tag}" id="tag" name="tag" placeholder="输入标签，以逗号(，)分隔">
+                    <input type="text" class="form-control" th:value="${tag}" id="tag" name="tag"
+                           autocomplete="off" placeholder="输入标签，以逗号(,)分隔" onclick="showSelectTag()">
+                                            <!--绑定到community.js的showSelectTag()方法，点击输入框才会弹出标签分组-->
+
+                    <div id="select-tag" class="publish-tag-tab"><!--默认不展示标签分组，点击标签输入框才会展示-->
+                        <!--标签分组-->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" th:each="tagDTO,tagDTOStat : ${tags}" th:class="${tagDTOStat.first ? 'active':''}"><!--循环遍历后端发送过来的标签缓存，展示标签分组-->
+                                <a th:href="${'#' + tagDTO.categoryName}" aria-controls="home" role="tab" data-toggle="tab" th:text="${tagDTO.categoryName}"></a>
+                            </li>
+                        </ul>
+
+                        <!--具体标签-->
+                        <div class="tab-content">
+                            <!--循环遍历各组标签-->
+                            <div role="tabpanel" th:id="${tagDTO.categoryName}" th:each="tagDTO : ${tags}" th:class="${tagDTOStat.first ? 'active tab-pane':'tab-pane'}">
+                                <span>
+                                    <span class="label label-info" th:each="tag : ${tagDTO.tags}">
+                                        <span class="glyphicon glyphicon-tags" onclick="selectTag(this)"
+                                              th:data-tag="${tag}" th:text="${' ' + tag}">
+                                        </span>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
+
                 <!--发布按钮-->
-                <span class="alert alert-danger" th:text="${error}" th:if="${error != null}"></span><!--用户未登录警告框-->
+                <span class="alert alert-danger" th:text="${error}" th:if="${error != null}"></span><!--不符合规范警告框-->
                 <button type="submit" class="btn btn-success btn-publish">发布</button>
                                     <!--btn-publish是使用了自己的样式文件写的样式-->
             </form>

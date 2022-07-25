@@ -6,7 +6,6 @@ import life.majiang.community.dto.ResultDTO;
 import life.majiang.community.enums.CommentTypeEnum;
 import life.majiang.community.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

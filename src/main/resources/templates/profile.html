@@ -49,7 +49,11 @@
                     <span class="text-desc"><span
                             th:text="${question.commentCount}"></span>个回复 - <span
                             th:text="${question.viewCount}"></span>次浏览 - <span
-                            th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span>
+                            th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span> -
+                        <a th:href="@{/publish/{id}(id=${question.id})}" class="community-menu"
+                           th:if="${session.user != null && session.user.accountId == question.creator}"><!--判断:当前用户才能编辑-->
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true">编辑</span>
+                    </a>
                     </span>
                 </div>
             </div>

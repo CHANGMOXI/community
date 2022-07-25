@@ -124,4 +124,29 @@ function collapseComments(e) {
     e.classList.toggle("active");
 }
 
+/*
+    点击标签，将标签内容放到标签输入框
+ */
+function selectTag(e){
+    let value = e.getAttribute("data-tag");
+
+    let previous = $("#tag").val();//标签输入框的值
+
+    if (previous.indexOf(value) == -1){//判断是否已经有标签内容，避免重复
+        if (previous){
+            //标签输入框已经有内容，则 原有内容加上 ,value
+            $("#tag").val(previous + ',' + value);
+        }else {
+            //标签输入框没有内容，则 直接加上value
+            $("#tag").val(value);
+        }
+    }
+}
+
+/*
+    点击输入框，展示标签分组
+ */
+function showSelectTag(){
+    $("#select-tag").show();
+}
 

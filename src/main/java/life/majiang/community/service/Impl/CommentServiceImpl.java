@@ -15,11 +15,11 @@ import life.majiang.community.enums.CommentTypeEnum;
 import life.majiang.community.exception.CustomizeException;
 import life.majiang.community.enums.CustomizeStatusCode;
 import life.majiang.community.service.CommentService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -56,8 +56,8 @@ public class CommentServiceImpl implements CommentService {
             return new ResultDTO(CustomizeStatusCode.NO_LOGIN);
         }
         //验证回复内容是否为空
-        //这里判断是否为空 原本使用的是commons-lang3工具包isBlank()方法，但是会报异常，后续再解决
-        if (commentCreateDTO == null || commentCreateDTO.getContent() == null || commentCreateDTO.getContent().isEmpty()){
+        //这里判断是否为空(包括空白符)，使用commons-lang3的工具类StringUtils的isBlank()方法
+        if (commentCreateDTO == null || StringUtils.isBlank(commentCreateDTO.getContent())){
             return new ResultDTO(CustomizeStatusCode.CONTENT_IS_EMPTY);
         }
 
