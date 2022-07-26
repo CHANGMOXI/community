@@ -1,12 +1,12 @@
 package life.majiang.community.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import life.majiang.community.dao.NotificationDao;
 import life.majiang.community.dao.UserDao;
 import life.majiang.community.domain.User;
-import life.majiang.community.dto.AccessTokenDTO;
-import life.majiang.community.dto.GitHubUser;
-import life.majiang.community.dto.PaginationDTO;
+import life.majiang.community.dto.*;
 import life.majiang.community.provider.GitHubProvider;
+import life.majiang.community.service.NotificationService;
 import life.majiang.community.service.QuestionService;
 import life.majiang.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +46,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     //GitHub登录功能：完成登录并显示登录状态
     @Override
@@ -137,23 +140,27 @@ public class UserServiceImpl implements UserService {
     //个人中心功能
     @Override
     public String profile(HttpServletRequest request, Model model, String action, Integer page, Integer size) {
-
         User user = (User) request.getSession().getAttribute("user");
-        if (user == null){
+        if (user == null) {
             return "redirect:/";//如果没有用户信息，则跳转到首页进行登录
         }
 
         if ("questions".equals(action)) {
-            //我的提问 部分
-            model.addAttribute("section","questions");
-            model.addAttribute("sectionName","我的提问");
+            //我的问题 部分
+            model.addAttribute("section", "questions");
+            model.addAttribute("sectionName", "我的问题");
 
-            PaginationDTO myPaginationDTO = questionService.list(user.getAccountId(), page, size);//获取当前用户当前页所有问题记录(包括头像url地址)
-            model.addAttribute("pagination",myPaginationDTO);//把当前用户当前页所有问题记录发送给首页，首页进行显示
+            //获取当前用户当前页所有问题记录(包括头像url地址)
+            PaginationDTO<QuestionDTO> myPaginationDTO = questionService.list(user.getAccountId(), page, size);
+            model.addAttribute("pagination", myPaginationDTO);//发送 当前用户当前页 所有问题记录
         } else if ("replies".equals(action)) {
             //最新回复 部分
-            model.addAttribute("section","replies");
-            model.addAttribute("sectionName","最新回复");
+            model.addAttribute("section", "replies");
+            model.addAttribute("sectionName", "最新回复");
+
+            //获取当前用户当前页所有通知记录
+            PaginationDTO<NotificationDTO> myPaginationDTO = notificationService.list(user.getAccountId(), page, size);
+            model.addAttribute("pagination", myPaginationDTO);//发送 当前用户当前页 所有通知记录
         }
 
         return "profile";

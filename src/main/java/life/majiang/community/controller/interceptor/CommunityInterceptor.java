@@ -3,6 +3,7 @@ package life.majiang.community.controller.interceptor;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import life.majiang.community.dao.UserDao;
 import life.majiang.community.domain.User;
+import life.majiang.community.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -22,9 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 
 //拦截器步骤 1.定义拦截器类，声明为bean(用@Component)，实现HandlerInterceptor接口，同时配置类中要包扫描加载这个bean
 @Component//注意当前类必须受Spring容器控制
-public class LoginInterceptor implements HandlerInterceptor {
+public class CommunityInterceptor implements HandlerInterceptor {
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private NotificationService notificationService;
 
     //在原始被拦截的操作 之前运行
     //持久化登录状态
@@ -51,6 +55,9 @@ public class LoginInterceptor implements HandlerInterceptor {
 
                     if (userByToken != null){
                         request.getSession().setAttribute("user",userByToken);  //第5步
+
+                        //****************** 持久化登录之后，所有页面展示 通知数 ******************
+                        request.getSession().setAttribute("unreadCount",notificationService.unreadCount(userByToken.getAccountId()));
                     }
                     break;
                 }

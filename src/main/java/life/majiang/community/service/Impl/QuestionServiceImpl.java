@@ -145,7 +145,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     //首页问题列表功能(带有分页功能，按时间倒序)
     @Override
-    public PaginationDTO list(Integer currentPage, Integer pageSize) {
+    public PaginationDTO<QuestionDTO> list(Integer currentPage, Integer pageSize) {
         //分页查询之前，要防止页面url传递的currentPage超过总页数，导致分页查询结果为空
         Integer totalCount = questionDao.selectCount(null);//用MyBatis-Plus自带的查询总数
         int totalPage = 0;
@@ -169,7 +169,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         List<QuestionDTO> questionDTOList = new ArrayList<>();//存放 当前页的 所有问题记录(所有QuestionDTO)
 
-        PaginationDTO paginationDTO = new PaginationDTO();//代表当前页的PaginationDTO对象
+        PaginationDTO<QuestionDTO> paginationDTO = new PaginationDTO<>();//代表当前页的PaginationDTO对象
 
         String tagBefore = null;
         for (Question question : currentPageQuestions) {
@@ -199,7 +199,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     //个人中心展示我的问题(带有分页功能，按时间倒序)
     @Override
-    public PaginationDTO list(Integer creator, Integer currentPage, Integer pageSize) {
+    public PaginationDTO<QuestionDTO> list(Integer creator, Integer currentPage, Integer pageSize) {
         //分页查询之前，要防止页面url传递的currentPage超过总页数，导致分页查询结果为空
         LambdaQueryWrapper<Question> lqwQuestion = new LambdaQueryWrapper<>();
         lqwQuestion.eq(Question::getCreator, creator);//查询creator对应的问题总数
@@ -224,7 +224,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         List<QuestionDTO> myQuestionDTOList = new ArrayList<>();//存放 当前用户当前页的 所有问题记录(所有QuestionDTO)
 
-        PaginationDTO myPaginationDTO = new PaginationDTO();//代表当前用户当前页的PaginationDTO对象
+        PaginationDTO<QuestionDTO> myPaginationDTO = new PaginationDTO<>();//代表当前用户当前页的PaginationDTO对象
 
         //根据creator查询当前用户信息
         LambdaQueryWrapper<User> lqwUser = new LambdaQueryWrapper<>();

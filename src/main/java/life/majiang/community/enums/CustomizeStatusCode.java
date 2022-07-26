@@ -17,14 +17,18 @@ public enum CustomizeStatusCode implements StatusCode {
     NO_LOGIN(2002,"请登录后再进行评论"),
 
     QUESTION_NOT_FOUND(2003,"该问题不存在或已被删除"),
+    COMMENT_NOT_FOUND(2004,"该评论不存在或已被删除"),
 
-    QUESTION_OR_COMMENT_NOT_FOUND(2004,"该问题/评论不存在或已被删除"),
-    TYPE_PARAM_WRONG(2005,"评论类型错误或不存在"),
+    QUESTION_OR_COMMENT_NOT_FOUND(2005,"该问题/评论不存在或已被删除"),
+    TYPE_PARAM_WRONG(2006,"评论类型错误或不存在"),
 
-    PARENT_QUESTION_NOT_FOUND(2006,"回复的问题不存在或已被删除"),
-    PARNET_COMMENT_NOT_FOUND(2007,"回复的评论不存在或已被删除"),
+    PARENT_QUESTION_NOT_FOUND(2007,"回复的问题不存在或已被删除"),
+    PARNET_COMMENT_NOT_FOUND(2008,"回复的评论不存在或已被删除"),
 
-    CONTENT_IS_EMPTY(2008,"回复内容不能为空"),
+    CONTENT_IS_EMPTY(2009,"回复内容不能为空"),
+
+    READ_NOTIFICATION_FAIL(2010,"不允许读取别人的信息"),
+    NOTIFICATION_NOT_FOUND(2011,"找不到该通知了..."),
 
     SUCCESS(200,"请求成功");
 

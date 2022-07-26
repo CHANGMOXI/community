@@ -51,7 +51,7 @@
             <hr>
 
             <!--问题记录的样式-->
-            <div class="media" th:each="question : ${pagination.questions}">   <!-- each循环遍历pagination(当前页)的每个question，显示到首页-->
+            <div class="media" th:each="question : ${pagination.data}">   <!-- each循环遍历pagination(当前页)的每个question，显示到首页-->
                 <div class="media-left">
                     <a href="#">
                         <!-- img-rounded为圆角正方形头像框，th:src为头像url地址 -->
@@ -66,10 +66,10 @@
                     <!--问题描述-->
                     <span th:text="${question.description}"></span><br>
                     <!--回复数、浏览数、发布时间-->
-                    <span class="text-desc"><span
-                            th:text="${question.commentCount}"></span>个回复 - <span
-                            th:text="${question.viewCount}"></span>次浏览 - <span
-                            th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span>
+                    <span class="text-desc">
+                        <span th:text="${question.commentCount}"></span>个回复 -
+                        <span th:text="${question.viewCount}"></span>次浏览 -
+                        <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span>
                     </span>
                 </div>
             </div>

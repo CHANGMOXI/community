@@ -3,15 +3,19 @@ package life.majiang.community.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import life.majiang.community.dao.CommentDao;
+import life.majiang.community.dao.NotificationDao;
 import life.majiang.community.dao.QuestionDao;
 import life.majiang.community.dao.UserDao;
 import life.majiang.community.domain.Comment;
+import life.majiang.community.domain.Notification;
 import life.majiang.community.domain.Question;
 import life.majiang.community.domain.User;
 import life.majiang.community.dto.CommentCreateDTO;
 import life.majiang.community.dto.CommentDTO;
 import life.majiang.community.dto.ResultDTO;
 import life.majiang.community.enums.CommentTypeEnum;
+import life.majiang.community.enums.NotificationStatusEnum;
+import life.majiang.community.enums.NotificationTypeEnum;
 import life.majiang.community.exception.CustomizeException;
 import life.majiang.community.enums.CustomizeStatusCode;
 import life.majiang.community.service.CommentService;
@@ -46,13 +50,16 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private NotificationDao notificationDao;
+
     //回复功能
     @Transactional//加入事务，当更新回复数的SQL语句执行失败时，会回滚新增问题评论的操作(同成功同失败)
     @Override
     public Object postComment(CommentCreateDTO commentCreateDTO, HttpServletRequest request) {
         //需要登录才能评论
-        User user = (User) request.getSession().getAttribute("user");
-        if (user == null){
+        User commentAuthor = (User) request.getSession().getAttribute("user");
+        if (commentAuthor == null){
             return new ResultDTO(CustomizeStatusCode.NO_LOGIN);
         }
         //验证回复内容是否为空
@@ -65,7 +72,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setParentId(commentCreateDTO.getParentId());
         comment.setContent(commentCreateDTO.getContent());
         comment.setType(commentCreateDTO.getType());
-        comment.setCommentAuthor(user.getAccountId());
+        comment.setCommentAuthor(commentAuthor.getAccountId());
         comment.setGmtCreate(System.currentTimeMillis());
         comment.setGmtModified(comment.getGmtCreate());
 
@@ -92,6 +99,9 @@ public class CommentServiceImpl implements CommentService {
             LambdaUpdateWrapper<Question> luwQuestion = new LambdaUpdateWrapper<>();
             luwQuestion.eq(Question::getId,parentQuestion.getId()).setSql("`comment_count` = `comment_count` + 1");
             questionDao.update(null,luwQuestion);
+
+            //新增通知
+            createNotification(comment, commentAuthor.getName(), parentQuestion.getCreator(), parentQuestion.getTitle(), NotificationTypeEnum.REPLY_QUESTION);
         }else {
             //回复评论
             //查询获取父类评论
@@ -107,10 +117,26 @@ public class CommentServiceImpl implements CommentService {
             LambdaUpdateWrapper<Comment> luwComment = new LambdaUpdateWrapper<>();
             luwComment.eq(Comment::getId,parentComment.getId()).setSql("`comment_count` = `comment_count` + 1");
             commentDao.update(null,luwComment);
+
+            //新增通知
+            createNotification(comment, commentAuthor.getName(), parentComment.getCommentAuthor(), parentComment.getContent(), NotificationTypeEnum.REPLY_COMMENT);
         }
 
-
         return new ResultDTO(CustomizeStatusCode.SUCCESS);
+    }
+
+    private void createNotification(Comment comment, String senderName, Integer receiver, String parentTitle, NotificationTypeEnum notificationTypeEnum) {
+        Notification notification = new Notification();
+        notification.setSender(comment.getCommentAuthor());
+        notification.setSenderName(senderName);
+        notification.setReceiver(receiver);
+        notification.setParentId(comment.getParentId());
+        notification.setParentTitle(parentTitle);
+        notification.setType(notificationTypeEnum.getType());
+        notification.setGmtCreate(System.currentTimeMillis());
+        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+
+        notificationDao.insert(notification);
     }
 
     //回复列表功能(按时间倒序)

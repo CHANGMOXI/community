@@ -20,10 +20,10 @@ public interface QuestionService {
     String doPublish(String title, String description, String tag, Integer id, HttpServletRequest request, Model model);
 
     //首页问题列表功能(带有分页功能，按时间倒序)
-    PaginationDTO list(Integer currentPage, Integer pageSize);
+    PaginationDTO<QuestionDTO> list(Integer currentPage, Integer pageSize);
 
     //重载list方法：个人中心展示我的问题(带有分页功能，按时间倒序)
-    PaginationDTO list(Integer creator, Integer currentPage, Integer pageSize);
+    PaginationDTO<QuestionDTO> list(Integer creator, Integer currentPage, Integer pageSize);
 
     //问题详情功能
     String question(Integer id, Model model);
