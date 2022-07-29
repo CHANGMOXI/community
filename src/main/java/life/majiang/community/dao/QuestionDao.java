@@ -18,4 +18,7 @@ import org.apache.ibatis.annotations.Select;
 public interface QuestionDao extends BaseMapper<Question> {
     //与整合MyBatis的不同：继承BaseMapper，指定泛型后，就带有基本的CURD操作的方法
     //需要定制CRUD，比如按条件查询，可以用LambdaQueryWrapper定制查询条件
+
+    //XML自定义复杂查询
+    Integer countBySearch(@Param("search") String search);
 }

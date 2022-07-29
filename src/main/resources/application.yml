@@ -24,6 +24,7 @@ spring:
       username: root
       password: 123456
 
+
 #去除spring图标
   main:
     banner-mode: off
@@ -36,3 +37,28 @@ mybatis-plus:
 #  去除mybatis-plus图标
   global-config:
     banner: false
+
+#  指定XML方式自定义SQL的XML文件位置
+  mapper-locations: classpath:mapper/*.xml
+#  指定返回值类型(实体类)的位置，这样在XML文件中的返回值需要返回实体类时，可以直接写实体类，不用带上包名
+  type-aliases-package: life.majiang.community.domain
+
+
+#日志
+logging:
+  file:
+    name: logs/community.log
+  level:
+#    根目录的info级别日志
+    root: info
+#    MyBatis-Plus的debug级别日志
+    life:
+      majiang:
+        community:
+          dao: debug
+  logback:
+    rollingpolicy:
+#      日志文件最大存储容量
+      max-file-size: 100MB
+#      最大历史文件数(以天为单位)
+      max-history: 30

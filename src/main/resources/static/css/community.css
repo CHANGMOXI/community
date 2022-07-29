@@ -139,3 +139,9 @@ body {
     margin: 100px;
 }
 
+
+/* 页尾样式 */
+.footer {
+    padding: 5px 35%;
+    color: #666;
+}

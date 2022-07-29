@@ -143,11 +143,20 @@ public class QuestionServiceImpl implements QuestionService {
         return "redirect:/";//没有异常，则跳转回(重定向)首页
     }
 
-    //首页问题列表功能(带有分页功能，按时间倒序)
+    //首页问题列表功能、搜索功能(带有分页功能，按时间倒序)
     @Override
-    public PaginationDTO<QuestionDTO> list(Integer currentPage, Integer pageSize) {
+    public PaginationDTO<QuestionDTO> list(String search, Integer currentPage, Integer pageSize) {
+        //验证搜索内容
+        if (StringUtils.isNotBlank(search)){
+            String[] split = StringUtils.split(search, " ");
+            search = Arrays.stream(split).collect(Collectors.joining("|"));
+        }else {
+            //search没有内容，设置为null，防止search为 ""空 或 "  "空白符 的情况也传进countBySearch方法中
+            search = null;
+        }
+
         //分页查询之前，要防止页面url传递的currentPage超过总页数，导致分页查询结果为空
-        Integer totalCount = questionDao.selectCount(null);//用MyBatis-Plus自带的查询总数
+        Integer totalCount = questionDao.countBySearch(search);//用XML自定义动态SQL
         int totalPage = 0;
         if (totalCount % pageSize == 0){
             totalPage = totalCount / pageSize;
@@ -160,9 +169,14 @@ public class QuestionServiceImpl implements QuestionService {
         if (currentPage > totalPage){
             currentPage = totalPage;
         }
-        //使用MyBatis-Plus自带的分页查询 获取 当前页所有question(按时间倒序)
+        //使用MyBatis-Plus自带的分页查询
+        //根据search是否有内容，获取 当前页所有question 或 当前页所有有关search的question(按时间倒序)
         IPage<Question> page = new Page<>(currentPage,pageSize);
         LambdaQueryWrapper<Question> lqwQuestion = new LambdaQueryWrapper<>();
+        if (search != null){
+            //search有内容，则查询有关搜索内容的问题
+            lqwQuestion.apply("title regexp '" + search + "'");
+        }
         lqwQuestion.orderByDesc(Question::getGmtCreate);//按时间倒序
         questionDao.selectPage(page, lqwQuestion);
         List<Question> currentPageQuestions = page.getRecords();
@@ -183,8 +197,8 @@ public class QuestionServiceImpl implements QuestionService {
             BeanUtils.copyProperties(question,questionDTO);//利用工具类，快速复制question信息
             questionDTO.setUser(user);//设置user信息
             //处理tag之后再放进questionDTO
-            tagBefore = question.getTag();
-            String[] tagAfter = tagBefore.split("，|,");//以，或,分隔标签
+            tagBefore = StringUtils.replace(question.getTag(),"，",",");
+            String[] tagAfter = StringUtils.split(tagBefore,",");//以,分隔标签
             questionDTO.setTagList(Arrays.asList(tagAfter));
 
             //依次把 当前页的 所有问题记录(所有QuestionDTO) 放进 questionDTOList

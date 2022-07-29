@@ -19,8 +19,8 @@ public interface QuestionService {
     //发布问题功能
     String doPublish(String title, String description, String tag, Integer id, HttpServletRequest request, Model model);
 
-    //首页问题列表功能(带有分页功能，按时间倒序)
-    PaginationDTO<QuestionDTO> list(Integer currentPage, Integer pageSize);
+    //首页问题列表功能、搜索功能(带有分页功能，按时间倒序)
+    PaginationDTO<QuestionDTO> list(String search, Integer currentPage, Integer pageSize);
 
     //重载list方法：个人中心展示我的问题(带有分页功能，按时间倒序)
     PaginationDTO<QuestionDTO> list(Integer creator, Integer currentPage, Integer pageSize);

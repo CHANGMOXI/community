@@ -79,30 +79,30 @@
                 <ul class="pagination">
                     <!--首页按钮-->
                     <li th:if="${pagination.showFirstPage}">
-                        <a href="/?page=1" aria-label="FirstPage">
+                        <a th:href="@{/(page=1,search=${search})}" aria-label="FirstPage">
                             <span aria-hidden="true">&lt;&lt;</span>
                         </a>
                     </li>
                     <!--上一页按钮-->
                     <li th:if="${pagination.showPrevious}">
-                        <a th:href="@{/(page=${pagination.currentPage - 1})}" aria-label="Previous">
+                        <a th:href="@{/(page=${pagination.currentPage - 1},search=${search})}" aria-label="Previous">
                             <span aria-hidden="true">&lt;</span>
                         </a>
                     </li>
                     <!-- each循环遍历 展示页码 -->
                     <li th:each="page : ${pagination.pages}"
                         th:class="${pagination.currentPage == page} ? 'active' : ''"><!--当前页高亮-->
-                        <a th:href="@{/(page=${page})}" th:text="${page}"></a>
+                        <a th:href="@{/(page=${page},search=${search})}" th:text="${page}"></a>
                     </li>
                     <!--下一页按钮-->
                     <li th:if="${pagination.showNext}">
-                        <a th:href="@{/(page=${pagination.currentPage + 1})}" aria-label="Next">
+                        <a th:href="@{/(page=${pagination.currentPage + 1},search=${search})}" aria-label="Next">
                             <span aria-hidden="true">&gt;</span>
                         </a>
                     </li>
                     <!--末尾页按钮-->
                     <li th:if="${pagination.showEndPage}">
-                        <a th:href="@{/(page=${pagination.totalPage})}" aria-label="EndPage">
+                        <a th:href="@{/(page=${pagination.totalPage},search=${search})}" aria-label="EndPage">
                             <span aria-hidden="true">&gt;&gt;</span>
                         </a>
                     </li>
@@ -111,12 +111,24 @@
 
         </div>
 
-        <!--2."热门话题" 部分-->
+
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <!--2."热门话题" 部分-->
             <h3>热门话题</h3>
+
+            <!--community项目网址二维码-->
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h4>GitHub项目地址</h4>
+                <img class="img-thumbnail" src="/images/community项目二维码.jpg" width="50%">
+            </div>
+
         </div>
     </div>
 </div>
+
+<!--****************************************** 引入导航条模块 ******************************************-->
+<div th:insert="~{footer :: foot}"></div><!--模块html文件名称 :: 模块名称-->
 
 </body>
 </html>

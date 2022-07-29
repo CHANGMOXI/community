@@ -9,6 +9,7 @@ import life.majiang.community.provider.GitHubProvider;
 import life.majiang.community.service.NotificationService;
 import life.majiang.community.service.QuestionService;
 import life.majiang.community.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.util.UUID;
  **/
 
 @Service//业务层的组件，等价于@Component
+@Slf4j//追加日志
 public class UserServiceImpl implements UserService {
 
     //将 注解里的配置文件属性值 赋值 给这些成员变量
@@ -113,6 +115,10 @@ public class UserServiceImpl implements UserService {
             //           ---> 服务端(码匠社区)获取cookie并根据里面的token来验证，实现持久化登录状态
             //            ---> 在IndexController.javawa中完成
             response.addCookie(new Cookie("token",token));
+        }else {
+            //登录失败，追加日志
+            log.error("callback userService.loginByGitHub get github error,{}",gitHubUser);
+
         }
 
         //登录成功或失败，都跳转回(重定向)到首页index页面

@@ -15,12 +15,13 @@
             </div>
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <form class="navbar-form navbar-left">
+                <form class="navbar-form navbar-left" action="/" method="get"><!--GET方式提交到首页-->
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="搜索问题"><!--搜索框的默认提示，原本的 Search 改成 搜索问题-->
+                        <input type="text" class="form-control" name="search" placeholder="搜索问题"><!--以search为名的搜索内容发送到IndexController-->
                     </div>
                     <button type="submit" class="btn btn-default">搜索</button>   <!--原本的 Submit按钮 改成 搜索-->
                 </form>
+
                 <ul class="nav navbar-nav navbar-right">
 
                     <!--▲▲▲登录成功，显示 发布按钮▲▲▲-->

@@ -1,0 +1,20 @@
+2022-07-29 16:11:57.011  INFO 6728 --- [restartedMain] l.m.community.CommunityApplication       : Starting CommunityApplication using Java 1.8.0_131 on DESKTOP-2CSMOUV with PID 6728 (D:\workspace\community\target\classes started by ASUS in D:\workspace\community)
+2022-07-29 16:11:57.011  INFO 6728 --- [restartedMain] l.m.community.CommunityApplication       : No active profile set, falling back to 1 default profile: "default"
+2022-07-29 16:11:57.090  INFO 6728 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2022-07-29 16:11:57.090  INFO 6728 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2022-07-29 16:12:00.128  INFO 6728 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8887 (http)
+2022-07-29 16:12:00.144  INFO 6728 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-07-29 16:12:00.144  INFO 6728 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
+2022-07-29 16:12:00.237  INFO 6728 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-07-29 16:12:00.237  INFO 6728 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3147 ms
+2022-07-29 16:12:00.347  INFO 6728 --- [restartedMain] c.a.d.s.b.a.DruidDataSourceAutoConfigure : Init DruidDataSource
+2022-07-29 16:12:00.582  INFO 6728 --- [restartedMain] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2022-07-29 16:12:02.099  INFO 6728 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2022-07-29 16:12:02.631  INFO 6728 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2022-07-29 16:12:02.662  INFO 6728 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8887 (http) with context path ''
+2022-07-29 16:12:02.678  INFO 6728 --- [restartedMain] l.m.community.CommunityApplication       : Started CommunityApplication in 6.443 seconds (JVM running for 9.575)
+2022-07-29 16:12:48.872  INFO 6728 --- [http-nio-8887-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2022-07-29 16:12:48.872  INFO 6728 --- [http-nio-8887-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2022-07-29 16:12:48.873  INFO 6728 --- [http-nio-8887-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2022-07-29 16:13:52.396  INFO 6728 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closing ...
+2022-07-29 16:13:52.411  INFO 6728 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed

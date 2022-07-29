@@ -126,6 +126,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private void createNotification(Comment comment, String senderName, Integer receiver, String parentTitle, NotificationTypeEnum notificationTypeEnum) {
+        //回复本人的问题/评论暂时需要通知，因为目前没有别的账号
+//        if (receiver == comment.getCommentAuthor()){//回复本人的问题/评论，不需要通知
+//            return;
+//        }
         Notification notification = new Notification();
         notification.setSender(comment.getCommentAuthor());
         notification.setSenderName(senderName);
