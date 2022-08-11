@@ -1,5 +1,17 @@
-## 码匠社区（实战类开源项目实现）
-### 作者：CHANGMOXI
+## QuickAsk社区（实战类开源项目）
+### 项目参考：https://github.com/codedrinker/community
+
+### 技术栈
+
+|      技术      | 参考  |
+|:------------:|:---:|
+| Spring Boot  |https://spring.io/projects/spring-boot#learn|
+| MyBatis-Plus |https://baomidou.com/|
+|    MySQL     |https://www.mysql.com/|
+|  Bootstrap   |https://v3.bootcss.com/|
+|  OAuth Apps  |https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps|
+
+
 
 ### 资料
 [项目参考网站 es社区](https://elasticsearch.cn/)  
