@@ -1,8 +1,10 @@
 ## QuickAsk社区（实战类开源项目）
-### 项目参考：https://github.com/codedrinker/community
+### 项目参考
+https://github.com/codedrinker/community
+### 主要功能
+技术交流社区，目前具有GitHub登录、搜索、提问、回复、通知等功能，还在不断完善中。
 
 ### 技术栈
-
 |      技术      | 参考  |
 |:------------:|:---:|
 | Spring Boot  |https://spring.io/projects/spring-boot#learn|
@@ -10,8 +12,6 @@
 |    MySQL     |https://www.mysql.com/|
 |  Bootstrap   |https://v3.bootcss.com/|
 |  OAuth Apps  |https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps|
-
-
 
 ### 资料
 [项目参考网站 es社区](https://elasticsearch.cn/)  
