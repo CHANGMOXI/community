@@ -7,7 +7,6 @@ import lombok.Data;
 /**
  * @author CZS
  * @create 2022-07-20 15:29
- *
  **/
 @Data
 public class ResultDTO<T> {

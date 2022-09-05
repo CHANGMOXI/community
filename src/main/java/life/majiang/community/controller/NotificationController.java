@@ -23,21 +23,21 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @GetMapping("/{id}")
-    public String read(@PathVariable(name = "id") Integer id, HttpServletRequest request){
+    public String read(@PathVariable(name = "id") Integer id, HttpServletRequest request) {
 
         User user = (User) request.getSession().getAttribute("user");
-        if (user == null){
+        if (user == null) {
             return "redirect:/";//如果没有用户信息，则跳转到首页进行登录
         }
 
         //获取id对应的通知，并设为已读
-        NotificationDTO notificationDTO = notificationService.read(id,user);
+        NotificationDTO notificationDTO = notificationService.read(id, user);
 
-        if (NotificationTypeEnum.REPLY_QUESTION.getType() == notificationDTO.getType()){
+        if (NotificationTypeEnum.REPLY_QUESTION.getType() == notificationDTO.getType()) {
             //回复问题的通知，直接跳转到相应问题页面
             return "redirect:/question/" + notificationDTO.getParentId();
         }
-        if (NotificationTypeEnum.REPLY_COMMENT.getType() == notificationDTO.getType()){
+        if (NotificationTypeEnum.REPLY_COMMENT.getType() == notificationDTO.getType()) {
             //回复评论的通知，先根据parentId获取父类评论，根据父类评论再获取相应的问题id
             Integer questionId = notificationService.getQuestionId(notificationDTO.getParentId());
             //跳转到相应问题页面

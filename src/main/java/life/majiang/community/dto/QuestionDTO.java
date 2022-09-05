@@ -8,10 +8,9 @@ import java.util.List;
 /**
  * @author CZS
  * @create 2022-07-14 12:45
- *
+ * <p>
  * Question实体类 与 数据库中表的字段 关联，所以不能直接加上user属性(为了获取头像url地址等信息)
- *  ---> 通过 传输层DTO 实现，创建QuestionDTO，里面除了Question原本的属性(字段)，再加上 user属性
- *
+ * ---> 通过 传输层DTO 实现，创建QuestionDTO，里面除了Question原本的属性(字段)，再加上 user属性
  **/
 
 @Data

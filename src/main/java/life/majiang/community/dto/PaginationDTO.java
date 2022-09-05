@@ -8,9 +8,8 @@ import java.util.List;
 /**
  * @author CZS
  * @create 2022-07-15 20:57
- *
+ * <p>
  * 分页DTO：一个PaginationDTO对象包括 当前页所有问题/通知记录、当前页码、总页数、当前页码以及它前后可供选择的页码、首页、上一页、末尾页、下一页
- *
  **/
 
 @Data
@@ -28,7 +27,7 @@ public class PaginationDTO<T> {
 
     //根据传参设置各个属性
     //形参halfRange 表示 当前页码 前后最多可展示的页码
-    public void setPagination(List<T> data, Long totalPages, Integer currentPage, Integer halfRange){
+    public void setPagination(List<T> data, Long totalPages, Integer currentPage, Integer halfRange) {
         //Long类型总页数转成int型方便后续操作
         //Long类型转int类型，Math.toIntExact方法在整数溢出时会抛异常，Long包装类的intValue方法不会抛异常并依然提供整数(由于溢出，一般不正确)
         int total = Math.toIntExact(totalPages);
@@ -41,34 +40,34 @@ public class PaginationDTO<T> {
 
         //设置可供选择的页码
         for (int i = currentPage - halfRange; i <= currentPage + halfRange; i++) {
-            if (i >= 1 && i <= total){
+            if (i >= 1 && i <= total) {
                 this.pages.add(i);
             }
         }
 
         //是否展示 上一页
-        if (currentPage == 1){
+        if (currentPage == 1) {
             showPrevious = false;
-        }else {
+        } else {
             showPrevious = true;
         }
         //是否展示 下一页
-        if (currentPage == total){
+        if (currentPage == total) {
             showNext = false;
-        }else {
+        } else {
             showNext = true;
         }
 
         //是否展示 首页
-        if (this.pages.contains(1)){
+        if (this.pages.contains(1)) {
             showFirstPage = false;
-        }else {
+        } else {
             showFirstPage = true;
         }
         //是否展示 末尾页
-        if (this.pages.contains(total)){
+        if (this.pages.contains(total)) {
             showEndPage = false;
-        }else {
+        } else {
             showEndPage = true;
         }
     }

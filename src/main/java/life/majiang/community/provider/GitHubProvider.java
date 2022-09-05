@@ -19,7 +19,7 @@ public class GitHubProvider {
 
     //根据OkHttp的POST请求示例，改成自己的方法
     //模拟POST请求
-    public String getAccessToken(AccessTokenDTO accessTokenDTO){
+    public String getAccessToken(AccessTokenDTO accessTokenDTO) {
 
         //原本是public static final，由于是封装成方法，所以定义成局部变量即可
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
@@ -52,7 +52,7 @@ public class GitHubProvider {
 
     ////根据OkHttp的GET请求示例，改成自己的方法
     //模拟GET请求
-    public GitHubUser getUser(String accessToken){
+    public GitHubUser getUser(String accessToken) {
         OkHttpClient client = new OkHttpClient();
 
         //现在GitHub推荐新的方式
@@ -60,7 +60,7 @@ public class GitHubProvider {
         Request request = new Request.Builder()
                 //▲▲▲▲▲▲新的方式▲▲▲▲▲▲
                 .url("https://api.github.com/user")
-                .header("Authorization","token " + accessToken)
+                .header("Authorization", "token " + accessToken)
                 //旧的方式
 //                .url("https://api.github.com/user?access_token=" + accessToken)
                 .build();

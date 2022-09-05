@@ -17,9 +17,8 @@ import java.io.PrintWriter;
 /**
  * @author CZS
  * @create 2022-07-19 16:12
- *
+ * <p>
  * 异常处理器 ---> 放在 表现层controller，其他层的异常 都抛到 表现层 再统一处理
- *
  **/
 
 @ControllerAdvice//异常处理器
@@ -28,12 +27,12 @@ public class CustomizeExceptionAdvice {
     @ExceptionHandler(Exception.class)
     public ModelAndView doException(Exception e, Model model, HttpServletRequest request, HttpServletResponse response) {
         String contentType = request.getContentType();
-        if ("application/json".equals(contentType)){
+        if ("application/json".equals(contentType)) {
             ResultDTO resultDTO;
             //返回JSON
-            if (e instanceof CustomizeException){
+            if (e instanceof CustomizeException) {
                 resultDTO = new ResultDTO((CustomizeException) e);
-            }else {
+            } else {
                 resultDTO = new ResultDTO(CustomizeStatusCode.SYSTEM_ERROR);
             }
 
@@ -49,14 +48,14 @@ public class CustomizeExceptionAdvice {
                 ioe.printStackTrace();
             }
             return null;
-        }else {
+        } else {
             //跳转错误页面
-            if (e instanceof CustomizeException){
+            if (e instanceof CustomizeException) {
                 //业务异常
-                model.addAttribute("message",e.getMessage());
-            }else {
+                model.addAttribute("message", e.getMessage());
+            } else {
                 //其他异常
-                model.addAttribute("message",CustomizeStatusCode.SYSTEM_ERROR.getMessage());
+                model.addAttribute("message", CustomizeStatusCode.SYSTEM_ERROR.getMessage());
             }
 
             return new ModelAndView("error");//返回到error页面，相当于controller中的return "index"

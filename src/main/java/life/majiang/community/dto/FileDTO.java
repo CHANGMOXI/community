@@ -5,9 +5,8 @@ import lombok.Data;
 /**
  * @author CZS
  * @create 2022-07-27 21:24
- *
+ * <p>
  * 图片上传数据格式
- *
  **/
 @Data
 public class FileDTO {

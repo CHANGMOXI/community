@@ -1,23 +1,21 @@
 package life.majiang.community.service;
 
+import life.majiang.community.domain.Question;
 import life.majiang.community.dto.PaginationDTO;
 import life.majiang.community.dto.QuestionDTO;
-import org.springframework.ui.Model;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
  * @author CZS
  * @create 2022-07-13 22:57
- *
- * 业务层接口：文章发布功能
- *
+ * <p>
+ * 业务层接口：问题相关功能
  **/
 public interface QuestionService {
 
-    //发布问题功能
-    String doPublish(String title, String description, String tag, Integer id, HttpServletRequest request, Model model);
+    //新增或更新问题
+    void createOrUpdate(Question question);
 
     //首页问题列表功能、搜索功能(带有分页功能，按时间倒序)
     PaginationDTO<QuestionDTO> list(String search, Integer currentPage, Integer pageSize);
@@ -26,10 +24,7 @@ public interface QuestionService {
     PaginationDTO<QuestionDTO> list(Integer creator, Integer currentPage, Integer pageSize);
 
     //问题详情功能
-    String question(Integer id, Model model);
-
-    //更新问题功能
-    String edit(Integer id, Model model);
+    QuestionDTO question(Integer id);
 
     //相关问题
     List<QuestionDTO> relatedQuestion(QuestionDTO questionDTO);

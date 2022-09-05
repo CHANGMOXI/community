@@ -3,11 +3,10 @@ package life.majiang.community.exception;
 /**
  * @author CZS
  * @create 2022-06-28 16:25
- *
+ * <p>
  * 自定义异常
- *
  **/
-public class CustomizeException extends RuntimeException{
+public class CustomizeException extends RuntimeException {
     private Integer code;
     private String message;
 

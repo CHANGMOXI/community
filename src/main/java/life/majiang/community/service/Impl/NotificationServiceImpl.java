@@ -5,38 +5,29 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import life.majiang.community.dao.CommentDao;
 import life.majiang.community.dao.NotificationDao;
-import life.majiang.community.dao.UserDao;
 import life.majiang.community.domain.Comment;
 import life.majiang.community.domain.Notification;
-import life.majiang.community.domain.Question;
 import life.majiang.community.domain.User;
-import life.majiang.community.dto.*;
+import life.majiang.community.dto.NotificationDTO;
+import life.majiang.community.dto.PaginationDTO;
 import life.majiang.community.enums.CustomizeStatusCode;
 import life.majiang.community.enums.NotificationStatusEnum;
 import life.majiang.community.enums.NotificationTypeEnum;
 import life.majiang.community.exception.CustomizeException;
-import life.majiang.community.provider.GitHubProvider;
 import life.majiang.community.service.NotificationService;
-import life.majiang.community.service.QuestionService;
-import life.majiang.community.service.UserService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author CZS
  * @create 2022-07-13 22:59
- *
+ * <p>
  * 通知功能业务
- *
  **/
 
 @Service//业务层的组件，等价于@Component
@@ -96,7 +87,7 @@ public class NotificationServiceImpl implements NotificationService {
     public Integer unreadCount(Integer accountId) {
         LambdaQueryWrapper<Notification> lqw = new LambdaQueryWrapper<>();
         //where receiver = accountId and status = 0;
-        lqw.eq(Notification::getReceiver,accountId).eq(Notification::getStatus,NotificationStatusEnum.UNREAD.getStatus());
+        lqw.eq(Notification::getReceiver, accountId).eq(Notification::getStatus, NotificationStatusEnum.UNREAD.getStatus());
 
         return notificationDao.selectCount(lqw);
     }
@@ -106,16 +97,16 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationDTO read(Integer id, User user) {
         Notification notification = notificationDao.selectById(id);
         //验证
-        if (notification == null){
+        if (notification == null) {
             throw new CustomizeException(CustomizeStatusCode.NOTIFICATION_NOT_FOUND);
         }
-        if (!Objects.equals(notification.getReceiver(), user.getAccountId())){
+        if (!Objects.equals(notification.getReceiver(), user.getAccountId())) {
             throw new CustomizeException(CustomizeStatusCode.READ_NOTIFICATION_FAIL);
         }
 
         //更新状态为 已读
         //已经是 已读 就不需要更新状态
-        if (notification.getStatus() == NotificationStatusEnum.UNREAD.getStatus()){
+        if (notification.getStatus() == NotificationStatusEnum.UNREAD.getStatus()) {
             notification.setStatus(NotificationStatusEnum.READ.getStatus());
             notificationDao.updateById(notification);
         }
@@ -131,7 +122,7 @@ public class NotificationServiceImpl implements NotificationService {
     public Integer getQuestionId(Integer commentId) {
         Comment comment = commentDao.selectById(commentId);
 
-        if (comment == null){
+        if (comment == null) {
             throw new CustomizeException(CustomizeStatusCode.COMMENT_NOT_FOUND);
         }
 

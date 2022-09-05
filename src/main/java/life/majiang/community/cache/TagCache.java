@@ -10,12 +10,11 @@ import java.util.stream.Collectors;
 /**
  * @author CZS
  * @create 2022-07-23 22:35
- *
+ * <p>
  * 标签缓存，在后端缓存好发送到前端展示
- *
  **/
 public class TagCache {
-    public static List<TagDTO> get(){
+    public static List<TagDTO> get() {
         List<TagDTO> tagDTOList = new ArrayList<>();
         TagDTO program = new TagDTO();
         program.setCategoryName("开发语言");
@@ -46,7 +45,7 @@ public class TagCache {
         return tagDTOList;
     }
 
-    public static String filterInvalid(String tags){
+    public static String filterInvalid(String tags) {
         String[] split = tags.split(",|，");
         List<TagDTO> tagDTOList = get();
 

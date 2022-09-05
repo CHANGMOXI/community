@@ -52,10 +52,10 @@ logging:
 #    根目录的info级别日志
     root: info
 #    MyBatis-Plus的debug级别日志
-    life:
-      majiang:
-        community:
-          dao: debug
+#    life:
+#      majiang:
+#        community:
+#          dao: debug
   logback:
     rollingpolicy:
 #      日志文件最大存储容量

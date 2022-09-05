@@ -1,7 +1,6 @@
 package life.majiang.community.controller;
 
 import life.majiang.community.dto.PaginationDTO;
-import life.majiang.community.service.IndexService;
 import life.majiang.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,14 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * @author CZS
  * @create 2022-07-10 17:19
- *
+ * <p>
  * 主页controller
- *
  **/
 
 @Controller
@@ -30,15 +26,15 @@ public class IndexController {
 
     @GetMapping("/")//匹配根目录
     public String index(Model model,
-                        @RequestParam(name = "page",defaultValue = "1") Integer page,
-                        @RequestParam(name = "size",defaultValue = "5") Integer size,
-                        @RequestParam(name = "search",required = false) String search){
+                        @RequestParam(name = "page", defaultValue = "1") Integer page,
+                        @RequestParam(name = "size", defaultValue = "5") Integer size,
+                        @RequestParam(name = "search", required = false) String search) {
         //所有页面持久化登录状态 交给 拦截器
 
         //展示首页问题列表并分页，以及搜索功能
-        PaginationDTO paginationDTO = questionService.list(search,page,size);//获取当前页所有问题记录(包括头像url地址)
-        model.addAttribute("pagination",paginationDTO);//把当前页所有问题记录发送给首页，首页进行显示
-        model.addAttribute("search",search);//把search内容传递回前端，用于分页
+        PaginationDTO paginationDTO = questionService.list(search, page, size);//获取当前页所有问题记录(包括头像url地址)
+        model.addAttribute("pagination", paginationDTO);//把当前页所有问题记录发送给首页，首页进行显示
+        model.addAttribute("search", search);//把search内容传递回前端，用于分页
 
         return "index";
     }

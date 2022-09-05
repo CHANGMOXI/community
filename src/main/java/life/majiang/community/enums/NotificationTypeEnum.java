@@ -5,8 +5,8 @@ package life.majiang.community.enums;
  * @create 2022-07-25 22:59
  **/
 public enum NotificationTypeEnum {
-    REPLY_QUESTION(1,"回复了问题"),
-    REPLY_COMMENT(2,"回复了评论");
+    REPLY_QUESTION(1, "回复了问题"),
+    REPLY_COMMENT(2, "回复了评论");
 
     private Integer type;
     private String desc;//描述：回复了问题/评论
@@ -25,9 +25,9 @@ public enum NotificationTypeEnum {
     }
 
     //获取传进来的type对应的desc
-    public static String descOfType(Integer type){
-        for (NotificationTypeEnum notificationTypeEnum : NotificationTypeEnum.values()){
-            if (notificationTypeEnum.getType() == type){
+    public static String descOfType(Integer type) {
+        for (NotificationTypeEnum notificationTypeEnum : NotificationTypeEnum.values()) {
+            if (notificationTypeEnum.getType() == type) {
                 return notificationTypeEnum.getDesc();
             }
         }
